@@ -5,9 +5,9 @@
   --linen: #f6f2ea;
   --linen-warm: #efe8db;
   --brass: #b3893c;
-  --brass-light: #c9a24a;
+  --brass-light: #c4a86a;
   --brass-glow: #e3d7bf;
-  --cream-gold: #e8dfd0;
+  --cream-gold: #e3d7bf;
   --sage: #8ea38f;
   --ink: #22301f;
   --ink-soft: #3d554a;
@@ -203,8 +203,8 @@ button:focus-visible {
 
 .intro h1 em {
   font-style: italic;
-  color: var(--brass-light);
   font-weight: 400;
+  color: var(--cream-gold);
 }
 
 .intro-lead {
