@@ -375,10 +375,10 @@ export default function App() {
                   The Fresh <em>Match</em>
                 </h1>
                 <p className="intro-lead">
-                  I built this so you don&apos;t have to guess your way through a new line.
-                  Answer a few honest questions — I&apos;ll pull the Ringana I&apos;d actually start
-                  you on, with why it earned a spot. Shortlist first. Full ritual if you want it.
-                  Then text me and we&apos;ll talk it through.
+                  Skip the guesswork. Tell me about your skin and what you want more of — I&apos;ll
+                  match you to the Ringana I&apos;d actually put in your hands first, and why it
+                  earned the spot. You&apos;ll get a tight shortlist (not a shelf dump). Dig into the
+                  full ritual if you want. Then message me and we&apos;ll make a real plan.
                 </p>
 
                 <div className="path-label">What are you here for?</div>
@@ -404,15 +404,38 @@ export default function App() {
             </div>
 
             <section className="legit-block" aria-label="Why Ringana">
-              <div className="legit-eyebrow">Why this line is different</div>
-              <h2 className="legit-title">
-                Ringana isn&apos;t another &ldquo;clean&rdquo; brand with a pretty label.
-              </h2>
-              <p className="legit-lede">
-                Thirty years. Still family-led. Made fresh on purpose — so what goes on and in your
-                body doesn&apos;t need an apology.
-              </p>
-              <div className="legit-grid">
+              <div className="legit-head">
+                <div className="legit-ornament" aria-hidden="true">
+                  <span className="legit-line" />
+                  <span className="legit-diamond" />
+                  <span className="legit-line" />
+                </div>
+                <div className="legit-eyebrow">Why this line is different</div>
+                <h2 className="legit-title">
+                  Not another &ldquo;clean&rdquo; brand with a pretty label —{" "}
+                  <em>thirty years</em> of doing it the hard way.
+                </h2>
+                <p className="legit-lede">
+                  Still family-led. Made fresh on purpose. So what goes on and in your body
+                  doesn&apos;t need an apology.
+                </p>
+              </div>
+
+              <div className="legit-stats" aria-label="Ringana at a glance">
+                {[
+                  ["30+", "years family-led"],
+                  ["2×", "weekly fresh make"],
+                  ["1", "campus, start to finish"],
+                  ["2026", "U.S. chapter opens"],
+                ].map(([n, l]) => (
+                  <div className="legit-stat" key={l}>
+                    <strong>{n}</strong>
+                    <span>{l}</span>
+                  </div>
+                ))}
+              </div>
+
+              <ol className="legit-grid">
                 {[
                   [
                     "Made about twice a week",
@@ -438,16 +461,22 @@ export default function App() {
                     "America is just opening",
                     "After Europe and Latin America, Ringana is investing in U.S. production in Virginia. The community that shows up now gets to learn the line before it becomes noise.",
                   ],
-                ].map(([t, d]) => (
-                  <div className="legit-item" key={t}>
-                    <h3>{t}</h3>
-                    <p>{d}</p>
-                  </div>
+                ].map(([t, d], idx) => (
+                  <li className="legit-item" key={t}>
+                    <span className="legit-num" aria-hidden>
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <div className="legit-item-copy">
+                      <h3>{t}</h3>
+                      <p>{d}</p>
+                    </div>
+                  </li>
                 ))}
-              </div>
+              </ol>
+
               <p className="legit-foot">
-                I fell hard for a handful of these products after seven years in clean beauty —
-                this quiz is how I help you find yours without the overwhelm.
+                I fell hard for a handful of these after seven years in clean beauty — this quiz is
+                how I help you find yours without the overwhelm.
               </p>
             </section>
           </div>
