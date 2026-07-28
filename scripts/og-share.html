@@ -113,26 +113,31 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 380px;
+      height: 420px;
       z-index: 2;
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      gap: 8px;
-      padding: 0 48px 18px;
+      gap: 18px;
+      padding: 0 56px 28px;
       pointer-events: none;
     }
     .shelf img {
-      height: 300px;
+      height: 340px;
       width: auto;
-      max-width: 160px;
+      max-width: 175px;
       object-fit: contain;
       object-position: bottom center;
-      filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.4));
+      filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.38));
       flex: 0 0 auto;
     }
-    .shelf img.tall { height: 320px; }
-    .shelf img.short { height: 210px; max-width: 190px; }
+    /* Keep every product on the same baseline / similar visual weight */
+    .shelf img.pack,
+    .shelf img.cap {
+      height: 250px;
+      max-width: 210px;
+      margin-bottom: 8px;
+    }
     .veil {
       position: absolute;
       inset: 0;
@@ -147,18 +152,18 @@
 <body>
   <div class="card">
     <div class="shelf" aria-hidden="true">
-      <img class="tall" src="../public/products/fresh/fresh-cleanser.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-cleansing-water.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-hydro-serum.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-anti-wrinkle-serum.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-adds-glow.png" alt="" />
-      <img class="short" src="../public/products/packs/pack-antiox.png" alt="" />
-      <img class="short" src="../public/products/caps/caps-immu.png" alt="" />
-      <img class="short" src="../public/products/caps/caps-moodoo.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-adds-repair.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-cream-medium.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-eye-serum.png" alt="" />
-      <img class="tall" src="../public/products/fresh/fresh-cream-rich.png" alt="" />
+      <img src="../public/products/fresh/fresh-cleanser.png" alt="" />
+      <img src="../public/products/fresh/fresh-cleansing-water.png" alt="" />
+      <img src="../public/products/fresh/fresh-hydro-serum.png" alt="" />
+      <img src="../public/products/fresh/fresh-anti-wrinkle-serum.png" alt="" />
+      <img src="../public/products/fresh/fresh-adds-glow.png" alt="" />
+      <img class="pack" src="../public/products/packs/pack-antiox.png" alt="" />
+      <img class="cap" src="../public/products/caps/caps-immu.png" alt="" />
+      <img class="cap" src="../public/products/caps/caps-moodoo.png" alt="" />
+      <img src="../public/products/fresh/fresh-adds-repair.png" alt="" />
+      <img src="../public/products/fresh/fresh-cream-medium.png" alt="" />
+      <img src="../public/products/fresh/fresh-eye-serum.png" alt="" />
+      <img src="../public/products/fresh/fresh-cream-rich.png" alt="" />
     </div>
     <div class="veil"></div>
     <div class="copy">
