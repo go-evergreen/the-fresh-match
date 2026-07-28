@@ -1,159 +1,101 @@
 #!/usr/bin/env python3
-"""Generate favicon + artsy OG share image (brand-matched typography)."""
+"""Build favicon + OG share image.
+
+The OG lockup (Ringana / with Taylor + ornament) is taken from the official
+brand og-image so typography matches the landing page exactly. Only the
+tagline and corner products are composited on top.
+"""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageEnhance
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public"
-PRODUCTS = PUBLIC / "products"
 FONTS = Path(__file__).resolve().parent / "fonts"
+BRAND_OG = Path(__file__).resolve().parent / "brand-og-source.jpg"
 
-# Match Ringana-with-Taylor brand card
-PINE = (28, 50, 39)  # #1c3227-ish
-PINE_DEEP = (20, 34, 27)
-BRASS = (184, 149, 74)  # muted gold like the ornament
-CREAM = (236, 230, 214)  # soft cream like the brand card
+PINE = (28, 50, 39)
+BRASS = (184, 149, 74)
+CREAM = (236, 230, 214)
 
 
 def load_font(name: str, size: int) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(str(FONTS / name), size=size)
 
 
-def paper_texture(size: tuple[int, int], base_rgb: tuple[int, int, int]) -> Image.Image:
-    """Subtle paper grain over deep pine — like the brand card."""
-    w, h = size
-    base = Image.new("RGB", size, base_rgb)
-    # soft vertical vignette
-    overlay = Image.new("RGBA", size, (0, 0, 0, 0))
-    od = ImageDraw.Draw(overlay)
-    for y in range(h):
-        t = abs(y - h / 2) / (h / 2)
-        a = int(28 * (t**1.4))
-        od.line([(0, y), (w, y)], fill=(0, 0, 0, a))
-    base = Image.alpha_composite(base.convert("RGBA"), overlay)
+def make_og() -> Image.Image:
+    if not BRAND_OG.exists():
+        raise SystemExit(
+            f"Missing {BRAND_OG.name}. Download from "
+            "https://tayrourke.github.io/tay-goes-fresh/og-image.jpg"
+        )
 
-    noise = Image.effect_noise((w, h), 28).convert("L")
-    noise = ImageEnhance.Contrast(noise).enhance(1.2)
-    grain = Image.merge("RGB", (noise, noise, noise)).convert("RGBA")
-    grain.putalpha(22)
-    return Image.alpha_composite(base, grain).convert("RGBA")
+    brand = Image.open(BRAND_OG).convert("RGB")
+    # Brand is 1200x800 — crop to OG 1200x630 keeping the lockup
+    top = 85
+    base = brand.crop((0, top, 1200, top + 630))
+    bg = base.getpixel((600, 30))
 
+    # Cover original tagline
+    cover = Image.new("RGB", (1200, 100), bg)
+    noise = Image.effect_noise((1200, 100), 12).convert("L")
+    grain = Image.merge("RGB", (noise, noise, noise))
+    cover = Image.blend(cover, grain, 0.045)
+    y0 = 500
+    base.paste(cover, (0, y0))
+    feather = base.crop((0, y0 - 12, 1200, y0 + 20)).filter(ImageFilter.GaussianBlur(3))
+    base.paste(feather, (0, y0 - 12))
 
-def prepare_product(path: Path, target_h: int) -> Image.Image:
-    im = Image.open(path).convert("RGBA")
-    alpha = im.split()[-1]
-    bbox = alpha.getbbox()
-    if bbox:
-        im = im.crop(bbox)
-    w, h = im.size
-    scale = target_h / h
-    return im.resize((max(1, int(w * scale)), max(1, int(h * scale))), Image.Resampling.LANCZOS)
-
-
-def paste_product(canvas: Image.Image, prod: Image.Image, cx: int, cy: int, rot: float = 0):
-    shadow = Image.new("RGBA", (prod.width + 40, prod.height + 40), (0, 0, 0, 0))
-    s = Image.new("RGBA", prod.size, (0, 0, 0, 90))
-    s.putalpha(prod.split()[-1].point(lambda a: int(a * 0.4)))
-    shadow.paste(s, (12, 16), s)
-    shadow = shadow.filter(ImageFilter.GaussianBlur(14))
-
-    rotated = prod.rotate(rot, resample=Image.Resampling.BICUBIC, expand=True)
-    sh = shadow.rotate(rot, resample=Image.Resampling.BICUBIC, expand=True)
-    canvas.alpha_composite(sh, (int(cx - sh.width / 2), int(cy - sh.height / 2 + 10)))
-    canvas.alpha_composite(rotated, (int(cx - rotated.width / 2), int(cy - rotated.height / 2)))
-
-
-def draw_ornament(draw: ImageDraw.ImageDraw, cx: int, y: int, half_w: int = 70):
-    """Thin gold rule with diamond center — matches brand card."""
-    draw.line([(cx - half_w, y), (cx - 7, y)], fill=BRASS, width=1)
-    draw.line([(cx + 7, y), (cx + half_w, y)], fill=BRASS, width=1)
-    # diamond
-    d = 4
-    draw.polygon([(cx, y - d), (cx + d, y), (cx, y + d), (cx - d, y)], fill=BRASS)
-
-
-def text_width(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont) -> int:
-    bbox = draw.textbbox((0, 0), text, font=font)
-    return bbox[2] - bbox[0]
-
-
-def draw_spaced(
-    draw: ImageDraw.ImageDraw,
-    text: str,
-    y: int,
-    font: ImageFont.FreeTypeFont,
-    fill,
-    canvas_w: int,
-    tracking: float = 0,
-):
-    """Centered text with optional letter-spacing (em-ish)."""
+    # New tagline (Work Sans, tracked — same treatment as brand card)
+    font = load_font("WorkSans-400.ttf", 16)
+    text = "Get your Fresh Match."
+    spacing = 4.0
+    d = ImageDraw.Draw(base)
     widths = []
     for ch in text:
-        widths.append(text_width(draw, ch, font) if ch != " " else int(font.size * 0.35))
-    total = sum(widths) + tracking * max(0, len(text) - 1)
-    x = (canvas_w - total) / 2
+        bbox = d.textbbox((0, 0), ch, font=font)
+        widths.append(bbox[2] - bbox[0] if ch != " " else int(font.size * 0.32))
+    total = sum(widths) + spacing * (len(text) - 1)
+    x = (1200 - total) / 2
+    y = 535
     for i, ch in enumerate(text):
-        draw.text((x, y), ch, font=font, fill=fill)
-        x += widths[i] + tracking
+        d.text((x, y), ch, font=font, fill=CREAM)
+        x += widths[i] + spacing
 
+    def prep(path: Path, th: int, opac: float = 0.8) -> Image.Image:
+        im = Image.open(path).convert("RGBA")
+        a = im.split()[-1]
+        bb = a.getbbox()
+        if bb:
+            im = im.crop(bb)
+        w, h = im.size
+        s = th / h
+        im = im.resize((max(1, int(w * s)), max(1, int(h * s))), Image.Resampling.LANCZOS)
+        r, g, b, a = im.split()
+        a = a.point(lambda v: int(v * opac))
+        return Image.merge("RGBA", (r, g, b, a))
 
-def make_og() -> Image.Image:
-    W, H = 1200, 630
-    base = paper_texture((W, H), PINE_DEEP)
-    draw = ImageDraw.Draw(base)
-
-    font_display = load_font("Fraunces-400.ttf", 96)
-    font_with = load_font("Fraunces-400-Italic.ttf", 46)
-    font_tag = load_font("WorkSans-400.ttf", 17)
-
-    # —— Exact brand-card hierarchy ——
-    draw_ornament(draw, W // 2, 128, half_w=86)
-
-    ringana, with_w, taylor = "Ringana", "with", "Taylor"
-    rw = text_width(draw, ringana, font_display)
-    ww = text_width(draw, with_w, font_with)
-    tw = text_width(draw, taylor, font_display)
-
-    draw.text(((W - rw) / 2, 168), ringana, font=font_display, fill=CREAM)
-    draw.text(((W - ww) / 2, 278), with_w, font=font_with, fill=CREAM)
-    draw.text(((W - tw) / 2, 328), taylor, font=font_display, fill=CREAM)
-
-    draw_spaced(
-        draw,
-        "Get your Fresh Match.",
-        455,
-        font_tag,
-        CREAM,
-        W,
-        tracking=4.0,
-    )
-
-    # Two products only — quiet corner still-life
-    still = [
-        (PRODUCTS / "fresh/fresh-hydro-serum.png", 220, 130, 555, -8, 0.85),
-        (PRODUCTS / "fresh/fresh-cream-medium.png", 185, 1065, 550, 7, 0.85),
-    ]
-    for path, th, cx, cy, rot, opac in still:
+    out = base.convert("RGBA")
+    for rel, th, cx, cy, rot in [
+        ("products/fresh/fresh-hydro-serum.png", 200, 80, 575, -9),
+        ("products/fresh/fresh-cream-medium.png", 170, 1120, 570, 8),
+    ]:
+        path = PUBLIC / rel
         if not path.exists():
             continue
-        prod = prepare_product(path, th)
-        r, g, b, a = prod.split()
-        a = a.point(lambda v, o=opac: int(v * o))
-        prod = Image.merge("RGBA", (r, g, b, a))
-        paste_product(base, prod, cx, cy, rot)
+        prod = prep(path, th).rotate(rot, expand=True, resample=Image.Resampling.BICUBIC)
+        sh = Image.new("RGBA", (prod.width + 30, prod.height + 30), (0, 0, 0, 0))
+        s = Image.new("RGBA", prod.size, (0, 0, 0, 60))
+        s.putalpha(prod.split()[-1].point(lambda a: int(a * 0.3)))
+        sh.paste(s, (10, 12), s)
+        sh = sh.filter(ImageFilter.GaussianBlur(10))
+        out.alpha_composite(sh, (int(cx - sh.width / 2), int(cy - sh.height / 2 + 8)))
+        out.alpha_composite(prod, (int(cx - prod.width / 2), int(cy - prod.height / 2)))
 
-    vig = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    vd = ImageDraw.Draw(vig)
-    for y in range(H - 100, H):
-        alpha = int(80 * ((y - (H - 100)) / 100))
-        vd.line([(0, y), (W, y)], fill=(*PINE_DEEP, alpha))
-    base = Image.alpha_composite(base, vig)
-
-    return base.convert("RGB")
+    return out.convert("RGB")
 
 
 def make_favicon_png(size: int) -> Image.Image:
@@ -199,10 +141,8 @@ def write_favicon_svg(path: Path):
 
 def main():
     og = make_og()
-    og_path = PUBLIC / "og-share.png"
-    og.save(og_path, "PNG", optimize=True)
-    print("wrote", og_path, og.size)
-
+    og.save(PUBLIC / "og-share.png", "PNG", optimize=True)
+    print("wrote", PUBLIC / "og-share.png")
     write_favicon_svg(PUBLIC / "favicon.svg")
     make_favicon_png(32).save(PUBLIC / "favicon-32.png", "PNG")
     make_favicon_png(180).save(PUBLIC / "apple-touch-icon.png", "PNG")
