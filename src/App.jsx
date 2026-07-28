@@ -375,10 +375,8 @@ export default function App() {
                   The Fresh <em>Match</em>
                 </h1>
                 <p className="intro-lead">
-                  Skip the guesswork. Tell me about your skin and what you want more of — I&apos;ll
-                  match you to the Ringana I&apos;d actually put in your hands first, and why it
-                  earned the spot. You&apos;ll get a tight shortlist (not a shelf dump). Dig into the
-                  full ritual if you want. Then message me and we&apos;ll make a real plan.
+                  After hours diving into these formulas and ingredients, I built this to help you
+                  choose the Ringana that actually fits — without the overwhelm.
                 </p>
 
                 <div className="path-label">What are you here for?</div>
@@ -424,11 +422,15 @@ export default function App() {
               <div className="legit-stats" aria-label="Ringana at a glance">
                 {[
                   ["30+", "years family-led"],
-                  ["2×", "weekly fresh make"],
-                  ["1", "campus, start to finish"],
+                  ["2×", "a week · each product"],
+                  ["Real", "expiration dates"],
                   ["2026", "U.S. chapter opens"],
-                ].map(([n, l]) => (
-                  <div className="legit-stat" key={l}>
+                ].map(([n, l], idx) => (
+                  <div
+                    className="legit-stat"
+                    key={l}
+                    style={{ animationDelay: `${0.12 + idx * 0.12}s` }}
+                  >
                     <strong>{n}</strong>
                     <span>{l}</span>
                   </div>
@@ -438,12 +440,12 @@ export default function App() {
               <ol className="legit-grid">
                 {[
                   [
-                    "Made about twice a week",
-                    "Not stockpiled for a year. Ringana manufactures on a needs basis — on average roughly twice weekly — so actives arrive potent. Every product carries a real expiration date.",
+                    "Each product, about twice a week",
+                    "Not stockpiled for a year. Ringana makes on a needs basis — on average each product roughly twice weekly — so actives arrive potent. Every bottle carries a real expiration date.",
                   ],
                   [
                     "Their campus. Their formulas.",
-                    "Developed, produced, and shipped from Ringana's own campus in Austria — not a random third-party factory remixing someone else's brief.",
+                    "Developed and produced in-house in Austria today — with U.S. production coming online so American customers get the same fresh standard, closer to home.",
                   ],
                   [
                     "Airless glass, by design",
