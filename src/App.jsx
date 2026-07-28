@@ -410,7 +410,7 @@ export default function App() {
           <div className="quiz">
             <div className="progress-wrap">
               <div className="progress-top">
-                <span className="progress-label">{q.section || q.eyebrow}</span>
+                <span className="progress-label">{q.eyebrow || q.section}</span>
                 <span className="progress-count">
                   {i + 1} of {qs.length}
                 </span>
@@ -421,7 +421,6 @@ export default function App() {
             </div>
 
             <div className="question-card" key={q.id}>
-              <div className="section-chip">{q.eyebrow}</div>
               <h2 className="question-text">{q.q}</h2>
               {q.note && <p className="question-sub">{q.note}</p>}
               {typeof q.max === "number" && (
