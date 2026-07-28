@@ -12,6 +12,7 @@ import {
 } from "./engine/match";
 import { ProductList } from "./components/ProductRow";
 import { LeaveBehindCard } from "./components/LeaveBehindCard";
+import { LegitSection } from "./components/LegitSection";
 import {
   formatTextBrief,
   formatLinksBrief,
@@ -401,86 +402,7 @@ export default function App() {
               </div>
             </div>
 
-            <section className="legit-block" aria-label="Why Ringana">
-              <div className="legit-head">
-                <div className="legit-ornament" aria-hidden="true">
-                  <span className="legit-line" />
-                  <span className="legit-diamond" />
-                  <span className="legit-line" />
-                </div>
-                <div className="legit-eyebrow">Why this line is different</div>
-                <h2 className="legit-title">
-                  Not another &ldquo;clean&rdquo; brand with a pretty label —{" "}
-                  <em>thirty years</em> of doing it the hard way.
-                </h2>
-                <p className="legit-lede">
-                  Still family-led. Made fresh on purpose. So what goes on and in your body
-                  doesn&apos;t need an apology.
-                </p>
-              </div>
-
-              <div className="legit-stats" aria-label="Ringana at a glance">
-                {[
-                  ["30+", "years family-led"],
-                  ["2×", "a week · each product"],
-                  ["Real", "expiration dates"],
-                  ["2026", "U.S. chapter opens"],
-                ].map(([n, l], idx) => (
-                  <div
-                    className="legit-stat"
-                    key={l}
-                    style={{ animationDelay: `${0.12 + idx * 0.12}s` }}
-                  >
-                    <strong>{n}</strong>
-                    <span>{l}</span>
-                  </div>
-                ))}
-              </div>
-
-              <ol className="legit-grid">
-                {[
-                  [
-                    "Each product, about twice a week",
-                    "Not stockpiled for a year. Ringana makes on a needs basis — on average each product roughly twice weekly — so actives arrive potent. Every bottle carries a real expiration date.",
-                  ],
-                  [
-                    "Their campus. Their formulas.",
-                    "Developed and produced in-house in Austria today — with U.S. production coming online so American customers get the same fresh standard, closer to home.",
-                  ],
-                  [
-                    "Airless glass, by design",
-                    "A patented airless system means product never meets air. Reactive plant actives stay bioactive without a cocktail of synthetic preservatives holding them together.",
-                  ],
-                  [
-                    "Plant actives at full strength",
-                    "No mineral oils, no microplastics, no fillers standing in for function. The bar is totally toxin free — and they publish transparency instead of marketing fluff.",
-                  ],
-                  [
-                    "One standard, whole routine",
-                    "FRESH skincare, CAPS supplements, PACKS nutrition — same uncompromising rules across skin and inside care, so your ritual isn't a patchwork of conflicting brands.",
-                  ],
-                  [
-                    "America is just opening",
-                    "After Europe and Latin America, Ringana is investing in U.S. production in Virginia. The community that shows up now gets to learn the line before it becomes noise.",
-                  ],
-                ].map(([t, d], idx) => (
-                  <li className="legit-item" key={t}>
-                    <span className="legit-num" aria-hidden>
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <div className="legit-item-copy">
-                      <h3>{t}</h3>
-                      <p>{d}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-
-              <p className="legit-foot">
-                I fell hard for a handful of these after seven years in clean beauty — this quiz is
-                how I help you find yours without the overwhelm.
-              </p>
-            </section>
+            <LegitSection />
           </div>
         )}
 
