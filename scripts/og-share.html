@@ -4,142 +4,170 @@
   <meta charset="UTF-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Exact same Fraunces + Work Sans as tay-goes-fresh -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --pine: #0f231b;
+      --pine-mid: #1c3227;
+      /* Warm gold-cream sampled from brand OG */
+      --cream: #e3d7bf;
+      --brass: #b8954a;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      width: 1200px;
-      height: 630px;
+      width: 2400px;
+      height: 1260px;
       overflow: hidden;
-      background: #14231c;
+      background: var(--pine);
     }
     .card {
-      width: 1200px;
-      height: 630px;
+      width: 2400px;
+      height: 1260px;
       position: relative;
+      overflow: hidden;
       background:
-        radial-gradient(ellipse 70% 55% at 50% 40%, rgba(40, 62, 48, 0.55), transparent 70%),
-        #14231c;
-      color: #ece6d6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: "Fraunces", Georgia, serif;
+        radial-gradient(ellipse 80% 70% at 50% 42%, #1a3328 0%, transparent 62%),
+        var(--pine);
+      color: var(--cream);
     }
     .card::before {
       content: "";
       position: absolute;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-      opacity: 0.35;
+      opacity: 0.4;
       pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       mix-blend-mode: soft-light;
+    }
+    .copy {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 80px;
+      text-align: center;
+      pointer-events: none;
     }
     .ornament {
       display: flex;
       align-items: center;
-      gap: 0;
-      margin-bottom: 1.65rem;
-      position: relative;
-      z-index: 2;
+      margin-bottom: 2rem;
     }
     .ornament .line {
-      width: 72px;
-      height: 1px;
-      background: #b8954a;
+      width: 140px;
+      height: 2px;
+      background: var(--brass);
     }
     .ornament .diamond {
-      width: 7px;
-      height: 7px;
-      background: #b8954a;
+      width: 12px;
+      height: 12px;
+      margin: 0 18px;
+      background: var(--brass);
       transform: rotate(45deg);
-      margin: 0 10px;
       flex-shrink: 0;
     }
-    .lockup {
-      text-align: center;
-      position: relative;
-      z-index: 2;
-    }
-    .ringana {
-      font-family: "Fraunces", serif;
+    .heading {
+      font-family: "Fraunces", Georgia, serif;
       font-weight: 400;
       font-optical-sizing: auto;
-      font-size: 96px;
-      line-height: 1.05;
-      letter-spacing: -0.01em;
-      color: #ece6d6;
+      font-size: 118px;
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      color: var(--cream);
+      text-shadow: 0 2px 40px rgba(0, 0, 0, 0.25);
     }
-    .with-taylor {
-      margin-top: 0.15em;
-      font-size: 96px;
-      line-height: 1.05;
-      letter-spacing: -0.01em;
-      color: #ece6d6;
+    .heading .line2 {
+      display: block;
+      margin-top: 0.02em;
     }
-    .with-taylor .with {
-      font-family: "Fraunces", serif;
+    .heading .fresh {
       font-style: italic;
       font-weight: 400;
-      font-size: 0.52em;
-      margin-right: 0.22em;
-      vertical-align: baseline;
+    }
+    .brand {
+      margin-top: 1.75rem;
+      font-family: "Fraunces", Georgia, serif;
+      font-optical-sizing: auto;
+      font-size: 42px;
+      line-height: 1.1;
+      color: var(--cream);
+      opacity: 0.92;
+    }
+    .brand .with {
+      font-style: italic;
+      font-size: 0.72em;
+      margin: 0 0.18em;
       position: relative;
-      top: -0.08em;
+      top: -0.04em;
     }
-    .with-taylor .taylor {
-      font-family: "Fraunces", serif;
-      font-style: normal;
-      font-weight: 400;
-    }
-    .tag {
-      position: relative;
-      z-index: 2;
-      margin-top: 2.35rem;
-      font-family: "Work Sans", sans-serif;
-      font-weight: 400;
-      font-size: 15px;
-      letter-spacing: 0.22em;
-      text-transform: none;
-      color: #ece6d6;
-    }
-    .prod {
+    .products {
       position: absolute;
-      z-index: 1;
-      object-fit: contain;
-      opacity: 0.88;
-      filter: drop-shadow(0 18px 28px rgba(0,0,0,0.35));
+      inset: 0;
+      z-index: 2;
       pointer-events: none;
     }
-    .prod.left {
-      left: -10px;
-      bottom: -30px;
-      height: 280px;
-      transform: rotate(-8deg);
+    .products img {
+      position: absolute;
+      object-fit: contain;
+      filter: drop-shadow(0 28px 40px rgba(0, 0, 0, 0.45));
     }
-    .prod.right {
-      right: -5px;
-      bottom: -40px;
-      height: 250px;
-      transform: rotate(7deg);
+    /* Artsy constellation — more products, not a grid dump */
+    .p1 { left: 2%; bottom: -2%; height: 58%; transform: rotate(-7deg); opacity: 0.95; }
+    .p2 { left: 11%; bottom: -8%; height: 52%; transform: rotate(-2deg); opacity: 0.9; }
+    .p3 { left: 20%; bottom: -4%; height: 46%; transform: rotate(4deg); opacity: 0.88; }
+    .p4 { left: 28%; bottom: -10%; height: 40%; transform: rotate(-5deg); opacity: 0.85; }
+    .p5 { right: 28%; bottom: -9%; height: 42%; transform: rotate(6deg); opacity: 0.85; }
+    .p6 { right: 19%; bottom: -3%; height: 48%; transform: rotate(-3deg); opacity: 0.9; }
+    .p7 { right: 10%; bottom: -7%; height: 54%; transform: rotate(5deg); opacity: 0.92; }
+    .p8 { right: 1%; bottom: -2%; height: 60%; transform: rotate(8deg); opacity: 0.95; }
+    .p9 { left: 6%; top: 8%; height: 28%; transform: rotate(-12deg); opacity: 0.7; }
+    .p10 { right: 5%; top: 10%; height: 26%; transform: rotate(10deg); opacity: 0.7; }
+    .p11 { left: 36%; bottom: -12%; height: 34%; transform: rotate(3deg); opacity: 0.75; }
+    .p12 { right: 36%; bottom: -11%; height: 33%; transform: rotate(-4deg); opacity: 0.75; }
+    .veil {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background:
+        radial-gradient(ellipse 48% 42% at 50% 44%, rgba(15, 35, 27, 0.55), rgba(15, 35, 27, 0.28) 55%, transparent 78%),
+        linear-gradient(to bottom, rgba(15, 35, 27, 0.45) 0%, transparent 22%, transparent 62%, rgba(15, 35, 27, 0.35) 100%);
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="ornament" aria-hidden="true">
-      <span class="line"></span>
-      <span class="diamond"></span>
-      <span class="line"></span>
+    <div class="products" aria-hidden="true">
+      <img class="p9" src="../public/products/caps/caps-immu.png" alt="" />
+      <img class="p10" src="../public/products/caps/caps-moodoo.png" alt="" />
+      <img class="p1" src="../public/products/fresh/fresh-cleanser.png" alt="" />
+      <img class="p2" src="../public/products/fresh/fresh-hydro-serum.png" alt="" />
+      <img class="p3" src="../public/products/fresh/fresh-anti-wrinkle-serum.png" alt="" />
+      <img class="p4" src="../public/products/fresh/fresh-adds-glow.png" alt="" />
+      <img class="p11" src="../public/products/packs/pack-antiox.png" alt="" />
+      <img class="p12" src="../public/products/packs/pack-balancing.png" alt="" />
+      <img class="p5" src="../public/products/fresh/fresh-adds-repair.png" alt="" />
+      <img class="p6" src="../public/products/fresh/fresh-cream-medium.png" alt="" />
+      <img class="p7" src="../public/products/fresh/fresh-eye-serum.png" alt="" />
+      <img class="p8" src="../public/products/fresh/fresh-cream-rich.png" alt="" />
     </div>
-    <div class="lockup">
-      <div class="ringana">Ringana</div>
-      <div class="with-taylor"><span class="with">with</span><span class="taylor">Taylor</span></div>
+    <div class="veil"></div>
+    <div class="copy">
+      <div class="ornament" aria-hidden="true">
+        <span class="line"></span>
+        <span class="diamond"></span>
+        <span class="line"></span>
+      </div>
+      <h1 class="heading">
+        <span class="line1">Get your</span>
+        <span class="line2"><span class="fresh">Fresh</span> Match</span>
+      </h1>
+      <div class="brand">Ringana <span class="with">with</span> Taylor</div>
     </div>
-    <p class="tag">Get your Fresh Match.</p>
-    <img class="prod left" src="../public/products/fresh/fresh-hydro-serum.png" alt="" />
-    <img class="prod right" src="../public/products/fresh/fresh-cream-medium.png" alt="" />
   </div>
 </body>
 </html>
