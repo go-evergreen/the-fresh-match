@@ -106,6 +106,8 @@ export function readMatchFromLocation(loc = window.location) {
 }
 
 export const TAYLOR_IG = "toxinfreetay";
+/** E.164 digits only (country code + number) for wa.me deep links. */
+export const TAYLOR_WA_PHONE = "18054047812";
 export const TAYLOR_WA = "toxinfreetay";
 
 async function copyToClipboard(text) {
@@ -126,17 +128,14 @@ export async function openInstagramToTaylor(body, username = TAYLOR_IG) {
 }
 
 /**
- * Open WhatsApp with the brief prefilled.
- * Username deep-links aren't reliable yet, so the message addresses @username
- * and WhatsApp lets them pick / search the chat.
+ * Open a WhatsApp chat with Taylor, message prefilled — they just hit Send.
  */
-export async function openWhatsAppToTaylor(body, username = TAYLOR_WA) {
-  const addressed = body.startsWith("Hi ")
+export async function openWhatsAppToTaylor(body, phoneDigits = TAYLOR_WA_PHONE) {
+  const text = body.startsWith("Hi ")
     ? body
-    : `Hi @${username} — here's my Fresh Match:\n\n${body}`;
-  await copyToClipboard(addressed);
+    : `Hi Taylor — here's my Fresh Match:\n\n${body}`;
   window.open(
-    `https://wa.me/?text=${encodeURIComponent(addressed)}`,
+    `https://wa.me/${phoneDigits}?text=${encodeURIComponent(text)}`,
     "_blank",
     "noopener,noreferrer"
   );

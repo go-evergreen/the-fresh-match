@@ -343,7 +343,7 @@ export default function App() {
 
   const whatsAppTaylor = async () => {
     await openWhatsAppToTaylor(formatTextBrief(briefPayload()));
-    flashSent("Opening WhatsApp — send to @toxinfreetay");
+    flashSent("Opening WhatsApp — hit Send");
   };
 
   const goalsNeedPick = q?.id === "goals" && ans.approach === "targeted";
