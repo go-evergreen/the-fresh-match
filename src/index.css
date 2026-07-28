@@ -5,7 +5,9 @@
   --linen: #f6f2ea;
   --linen-warm: #efe8db;
   --brass: #b3893c;
-  --brass-light: #cfa95e;
+  --brass-light: #c9a24a;
+  --brass-glow: #e3d7bf;
+  --cream-gold: #e8dfd0;
   --sage: #8ea38f;
   --ink: #22301f;
   --ink-soft: #3d554a;
@@ -163,7 +165,7 @@ button:focus-visible {
 .intro-copy {
   position: relative;
   z-index: 2;
-  max-width: 26rem;
+  max-width: 28rem;
   margin: 0 auto;
   animation: riseIn 0.85s ease 0.15s both;
 }
@@ -191,22 +193,25 @@ button:focus-visible {
 .intro h1 {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(2.6rem, 9vw, 3.75rem);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  margin-bottom: 1rem;
+  font-optical-sizing: auto;
+  font-size: clamp(2.85rem, 10vw, 4.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.15rem;
+  color: var(--cream-gold);
 }
 
 .intro h1 em {
   font-style: italic;
   color: var(--brass-light);
+  font-weight: 400;
 }
 
 .intro-lead {
   font-size: 1.05rem;
-  line-height: 1.7;
-  opacity: 0.88;
-  max-width: 22rem;
+  line-height: 1.75;
+  color: rgba(232, 223, 208, 0.9);
+  max-width: 24rem;
   margin: 0 auto 1.85rem;
   font-weight: 300;
 }
@@ -295,6 +300,85 @@ button:focus-visible {
   line-height: 1.6;
   opacity: 0.55;
   max-width: 22rem;
+}
+
+/* —— Intro legitimacy build-up —— */
+.legit-block {
+  margin: 1.35rem 0 0.5rem;
+  padding: 2rem 1.4rem 1.75rem;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(201, 162, 74, 0.1), transparent 55%),
+    linear-gradient(165deg, #fbf7f0 0%, #f3efe6 50%, #eef3ef 100%);
+  border: 1.5px solid rgba(28, 50, 39, 0.1);
+  border-radius: 24px;
+}
+
+.legit-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin-bottom: 0.65rem;
+  font-weight: 500;
+}
+
+.legit-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-size: clamp(1.55rem, 4.5vw, 2rem);
+  line-height: 1.2;
+  color: var(--pine);
+  margin-bottom: 0.65rem;
+  max-width: 22rem;
+}
+
+.legit-lede {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-bottom: 1.5rem;
+  max-width: 28rem;
+  font-weight: 300;
+}
+
+.legit-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .legit-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.legit-item h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--pine);
+  margin-bottom: 0.3rem;
+  letter-spacing: -0.01em;
+}
+
+.legit-item p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.legit-foot {
+  margin-top: 1.5rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid rgba(28, 50, 39, 0.1);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--pine);
+  font-style: italic;
+  font-family: var(--display);
+  max-width: 30rem;
 }
 
 /* —— Quiz (toxin-audit polish, pine + brass) —— */

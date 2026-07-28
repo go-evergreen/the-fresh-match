@@ -375,8 +375,10 @@ export default function App() {
                   The Fresh <em>Match</em>
                 </h1>
                 <p className="intro-lead">
-                  Tell me about your skin and what you&apos;re after — I&apos;ll match you to the
-                  Ringana I&apos;d actually start you on. Real actives. No fluff. No shelf dump.
+                  I built this so you don&apos;t have to guess your way through a new line.
+                  Answer a few honest questions — I&apos;ll pull the Ringana I&apos;d actually start
+                  you on, with why it earned a spot. Shortlist first. Full ritual if you want it.
+                  Then text me and we&apos;ll talk it through.
                 </p>
 
                 <div className="path-label">What are you here for?</div>
@@ -400,6 +402,54 @@ export default function App() {
                 </p>
               </div>
             </div>
+
+            <section className="legit-block" aria-label="Why Ringana">
+              <div className="legit-eyebrow">Why this line is different</div>
+              <h2 className="legit-title">
+                Ringana isn&apos;t another &ldquo;clean&rdquo; brand with a pretty label.
+              </h2>
+              <p className="legit-lede">
+                Thirty years. Still family-led. Made fresh on purpose — so what goes on and in your
+                body doesn&apos;t need an apology.
+              </p>
+              <div className="legit-grid">
+                {[
+                  [
+                    "Made about twice a week",
+                    "Not stockpiled for a year. Ringana manufactures on a needs basis — on average roughly twice weekly — so actives arrive potent. Every product carries a real expiration date.",
+                  ],
+                  [
+                    "Their campus. Their formulas.",
+                    "Developed, produced, and shipped from Ringana's own campus in Austria — not a random third-party factory remixing someone else's brief.",
+                  ],
+                  [
+                    "Airless glass, by design",
+                    "A patented airless system means product never meets air. Reactive plant actives stay bioactive without a cocktail of synthetic preservatives holding them together.",
+                  ],
+                  [
+                    "Plant actives at full strength",
+                    "No mineral oils, no microplastics, no fillers standing in for function. The bar is totally toxin free — and they publish transparency instead of marketing fluff.",
+                  ],
+                  [
+                    "One standard, whole routine",
+                    "FRESH skincare, CAPS supplements, PACKS nutrition — same uncompromising rules across skin and inside care, so your ritual isn't a patchwork of conflicting brands.",
+                  ],
+                  [
+                    "America is just opening",
+                    "After Europe and Latin America, Ringana is investing in U.S. production in Virginia. The community that shows up now gets to learn the line before it becomes noise.",
+                  ],
+                ].map(([t, d]) => (
+                  <div className="legit-item" key={t}>
+                    <h3>{t}</h3>
+                    <p>{d}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="legit-foot">
+                I fell hard for a handful of these products after seven years in clean beauty —
+                this quiz is how I help you find yours without the overwhelm.
+              </p>
+            </section>
           </div>
         )}
 
@@ -615,19 +665,19 @@ export default function App() {
             )}
 
             <div className="edu-block">
-              <div className="k">Why Ringana formulas work the way they do</div>
+              <div className="k">Remember why this line hits different</div>
               {[
                 [
-                  "Made roughly twice a week",
-                  "Manufactured on a needs basis — on average about twice weekly — so what arrives was made recently, not warehoused for a year. Every product carries an expiration date.",
+                  "Made fresh — not warehoused forever",
+                  "Roughly twice-weekly production, real expiration dates, plant actives that still mean something when they arrive.",
                 ],
                 [
-                  "Airless glass, by design",
-                  "A patented airless system means product never meets air — so reactive plant actives stay bioactive without synthetic preservatives holding them together.",
+                  "Airless glass, campus-made",
+                  "Their formulas, their campus, airless packaging — so you get potency without the preservative load.",
                 ],
                 [
-                  "Ten bottles, one free product",
-                  "Save ten empty skincare glass bottles (pump + inner included), send them back, and Ringana gives you a free product from the skincare range.",
+                  "Talk it through with me",
+                  "Your shortlist is a starting point. Screenshot your ritual card or send the brief — I'll tell you what I'd actually begin with.",
                 ],
               ].map(([t, d]) => (
                 <div className="edu-item" key={t}>
@@ -635,9 +685,6 @@ export default function App() {
                   <p>{d}</p>
                 </div>
               ))}
-              <div className="edu-foot">
-                Return details and shipping for the U.S. will be confirmed at launch.
-              </div>
             </div>
 
             <div className="cta-block share-footer">
