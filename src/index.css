@@ -198,13 +198,13 @@ button:focus-visible {
   line-height: 1.02;
   letter-spacing: -0.02em;
   margin-bottom: 1.15rem;
-  color: var(--cream-gold);
+  color: var(--brass-light);
 }
 
 .intro h1 em {
   font-style: italic;
   font-weight: 400;
-  color: var(--cream-gold);
+  color: #e3d4a8;
 }
 
 .intro-lead {
