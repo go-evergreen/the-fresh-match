@@ -34,7 +34,7 @@ export function LeaveBehindCard({ name, face, body, supp, path, summary }) {
           aria-expanded={open}
         >
           <div className="leave-card-top">
-            <div className="leave-brand">Ringana with Taylor</div>
+            <div className="leave-brand">The Fresh Grove</div>
             <h3 className="leave-title">{title}</h3>
             {summary && <p className="leave-summary">{summary}</p>}
             {!open && (
@@ -99,7 +99,7 @@ export function LeaveBehindCard({ name, face, body, supp, path, summary }) {
               </div>
             )}
 
-            <p className="leave-foot">Screenshot this · talk it through with Taylor</p>
+            <p className="leave-foot">Screenshot this · send it to your Fresh Partner</p>
           </div>
         )}
       </div>

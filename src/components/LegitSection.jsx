@@ -183,8 +183,8 @@ export function LegitSection() {
       </ol>
 
       <p className="legit-foot">
-        I fell hard for a handful of these after seven years in clean beauty — this quiz is how I
-        help you find yours without the overwhelm.
+        This quiz is how The Fresh Grove helps you find your match without the overwhelm — then
+        talk it through with the partner who shared it.
       </p>
     </section>
   );

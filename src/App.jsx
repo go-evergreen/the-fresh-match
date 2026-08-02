@@ -18,12 +18,9 @@ import {
   formatLinksBrief,
   buildRestoreUrl,
   readMatchFromLocation,
-  openInstagramToTaylor,
-  openWhatsAppToTaylor,
 } from "./lib/share";
 import "./index.css";
 
-const FLODESK_FORM_ID = "6a4d7c6b23b85452ae98771e";
 const QUIZ_URL =
   typeof window !== "undefined"
     ? `${window.location.origin}${window.location.pathname}`
@@ -81,11 +78,9 @@ export default function App() {
   const [ans, setAns] = useState({});
   const [draft, setDraft] = useState([]);
   const [picked, setPicked] = useState(null);
-  const [formOpen, setFormOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copiedLinks, setCopiedLinks] = useState(false);
   const [shared, setShared] = useState(false);
-  const [sentHint, setSentHint] = useState("");
   const [guestName, setGuestName] = useState("");
   const [restoredBanner, setRestoredBanner] = useState(false);
 
@@ -115,23 +110,6 @@ export default function App() {
       window.history.replaceState(null, "", hash);
     }
   }, [screen, path, ans, guestName]);
-
-  useEffect(() => {
-    if (!formOpen || typeof window.fd !== "function") return;
-    window.fd("form", {
-      formId: FLODESK_FORM_ID,
-      containerEl: "#fd-form-modal",
-    });
-  }, [formOpen]);
-
-  useEffect(() => {
-    if (!formOpen) return undefined;
-    const onKey = (e) => {
-      if (e.key === "Escape") setFormOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [formOpen]);
 
   const advance = (nextAns) => {
     const nextQs = buildQs(path, nextAns);
@@ -163,7 +141,6 @@ export default function App() {
     setCopied(false);
     setCopiedLinks(false);
     setShared(false);
-    setSentHint("");
     setRestoredBanner(false);
     setGuestName("");
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -218,11 +195,9 @@ export default function App() {
     setAns({});
     setDraft([]);
     setPicked(null);
-    setFormOpen(false);
     setCopied(false);
     setCopiedLinks(false);
     setShared(false);
-    setSentHint("");
     setRestoredBanner(false);
     setGuestName("");
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -318,7 +293,7 @@ export default function App() {
         await navigator.share({
           title: guestName?.trim()
             ? `${guestName.trim()}'s Fresh Match`
-            : "My Fresh Match — Ringana with Taylor",
+            : "My Fresh Match — The Fresh Grove",
           text,
           url: restoreUrl,
         });
@@ -332,30 +307,15 @@ export default function App() {
     await copyText();
   };
 
-  const flashSent = (msg) => {
-    setSentHint(msg);
-    setTimeout(() => setSentHint(""), 3200);
-  };
-
-  const instagramTaylor = async () => {
-    await openInstagramToTaylor(formatTextBrief(briefPayload()));
-    flashSent("Copied — paste into the IG DM");
-  };
-
-  const whatsAppTaylor = async () => {
-    await openWhatsAppToTaylor(formatTextBrief(briefPayload()));
-    flashSent("Opening WhatsApp — hit Send");
-  };
-
   const goalsNeedPick = q?.id === "goals" && ans.approach === "targeted";
   const multiBlocked = goalsNeedPick && draft.length === 0;
 
   return (
     <div className="app">
       <div className="brand-top">
-        <a href="https://tayrourke.github.io/tay-goes-fresh/" target="_blank" rel="noreferrer">
-          Ringana <span>with Taylor</span>
-        </a>
+        <span className="brand-mark">
+          The Fresh <span>Grove</span>
+        </span>
       </div>
 
       <div className="shell">
@@ -363,21 +323,13 @@ export default function App() {
           <div className="intro">
             <div className="intro-hero">
               <div className="intro-copy">
-                <div className="intro-bubble-wrap">
-                  <img
-                    className="intro-bubble"
-                    src="./products/lifestyle/taylor-hero.png"
-                    alt="Taylor"
-                    decoding="async"
-                  />
-                </div>
                 <div className="eyebrow">A two-minute match</div>
                 <h1>
                   The Fresh <em>Match</em>
                 </h1>
                 <p className="intro-lead">
-                  After hours diving into these formulas and ingredients, I built this to help you
-                  choose the Ringana that actually fits — without the overwhelm.
+                  A Fresh Grove resource to help you find the Ringana that actually fits — without
+                  the overwhelm.
                 </p>
 
                 <div className="path-label">What are you here for?</div>
@@ -396,10 +348,14 @@ export default function App() {
                   ))}
                 </div>
                 <p className="intro-note">
-                  An educational tool from an independent Ringana Fresh Partner — not an official
+                  An educational tool from independent Ringana Fresh Partners — not an official
                   Ringana site, and not medical advice.
                 </p>
-                <p className="copyright">© 2026 Swaps Made Simple LLC</p>
+                <p className="copyright">© 2026 The Fresh Grove</p>
+                <p className="exclusive-note">
+                  An exclusive resource for our circle — please enjoy it with the partner who shared
+                  it, and kindly keep it within The Fresh Grove.
+                </p>
               </div>
             </div>
 
@@ -494,7 +450,7 @@ export default function App() {
             {restoredBanner && (
               <div className="restore-banner">
                 Restored a shared match — scroll to the bottom when you&apos;re ready to name it or
-                send it.
+                send it to your Fresh Partner.
               </div>
             )}
 
@@ -560,8 +516,8 @@ export default function App() {
                   </ul>
                 </div>
                 <p className="playbook-note">
-                  Screenshot your ritual card or send the brief from the bottom — I&apos;ll tell you
-                  what I&apos;d actually start with.
+                  Screenshot your ritual card or send the brief below to the Fresh Partner who
+                  shared this with you — they&apos;ll help you decide what to start with.
                 </p>
               </div>
             )}
@@ -629,8 +585,8 @@ export default function App() {
                   "Their formulas, their campus, airless packaging — so you get potency without the preservative load.",
                 ],
                 [
-                  "Talk it through with me",
-                  "Your shortlist is a starting point. Screenshot your ritual card or send the brief — I'll tell you what I'd actually begin with.",
+                  "Talk it through with your partner",
+                  "Your shortlist is a starting point. Send your results to the Fresh Partner who shared this — they'll walk you through what to begin with.",
                 ],
               ].map(([t, d]) => (
                 <div className="edu-item" key={t}>
@@ -642,10 +598,11 @@ export default function App() {
 
             <div className="cta-block share-footer">
               <div className="cta-eyebrow">Save &amp; send</div>
-              <h3>Send this to Taylor</h3>
+              <h3>Send this to your Fresh Partner</h3>
               <p>
-                Name it for a screenshot, then IG or WhatsApp the brief (@toxinfreetay) — or copy
-                the match link so I can open the exact same results.
+                Name it for a screenshot, then share or copy the brief — send it to the Fresh
+                Partner who shared this quiz with you so they can open the exact same results and
+                walk you through your match.
               </p>
 
               <label className="name-field name-field-on-pine">
@@ -671,49 +628,35 @@ export default function App() {
               </div>
 
               <div className="cta-actions">
-                <button type="button" className="btn-brass" onClick={instagramTaylor}>
-                  Message on IG
+                <button type="button" className="btn-brass" onClick={shareMatch}>
+                  {shared ? "Shared!" : "Share with partner"}
                 </button>
-                <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={whatsAppTaylor}>
-                  WhatsApp
-                </button>
-                <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={shareMatch}>
-                  {shared ? "Shared!" : "Share"}
-                </button>
-              </div>
-              <div className="cta-actions cta-actions-secondary">
                 <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={copyText}>
                   {copied ? "Copied!" : "Copy for text"}
                 </button>
                 <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={copyRestoreLink}>
                   Copy match link
                 </button>
+              </div>
+              <div className="cta-actions cta-actions-secondary">
                 <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={copyWithLinks}>
                   {copiedLinks ? "Copied!" : "Copy with shop links"}
                 </button>
               </div>
-              {sentHint && <p className="sent-hint">{sentHint}</p>}
 
               <div className="cta-actions cta-actions-footer">
                 <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={restart}>
                   Retake the quiz
                 </button>
               </div>
-              <p className="cta-soft">
-                Optional:{" "}
-                <button type="button" className="linkish" onClick={() => setFormOpen(true)}>
-                  join for US launch updates
-                </button>
-                .
-              </p>
             </div>
 
             <div className="legal">
               <p>
                 <strong>The important stuff:</strong> This quiz is an educational tool created by
-                Taylor, an independent Ringana Fresh Partner (pending U.S. launch). It is a personal
-                project, not an official Ringana website or assessment, and product information is
-                drawn from Ringana&apos;s published product pages on ringana.com. Matches are general
+                The Fresh Grove, a team of independent Ringana Fresh Partners (pending U.S. launch).
+                It is not an official Ringana website or assessment, and product information is drawn
+                from Ringana&apos;s published product pages on ringana.com. Matches are general
                 suggestions based on your answers — not personalized medical, dermatological, or
                 nutritional advice. Statements regarding supplements have not been evaluated by the
                 Food and Drug Administration; these products are not intended to diagnose, treat,
@@ -724,31 +667,15 @@ export default function App() {
                 offering will be confirmed at launch, and some products sold in Europe will not be
                 available in the United States.
               </p>
-              <p className="copyright">© 2026 Swaps Made Simple LLC</p>
+              <p className="copyright">© 2026 The Fresh Grove</p>
+              <p className="exclusive-note">
+                An exclusive resource for our circle — please enjoy it with the partner who shared
+                it, and kindly keep it within The Fresh Grove.
+              </p>
             </div>
           </div>
         )}
       </div>
-
-      {formOpen && (
-        <div className="fd-overlay" role="dialog" aria-modal="true" aria-label="Join founding list">
-          <button type="button" className="fd-backdrop" aria-label="Close" onClick={() => setFormOpen(false)} />
-          <div className="fd-modal">
-            <button type="button" className="fd-close" onClick={() => setFormOpen(false)}>
-              ×
-            </button>
-            <h3>US launch updates</h3>
-            <p className="fd-lead">Optional — only if you want launch notes from Taylor.</p>
-            <div id="fd-form-modal" />
-            <p className="fd-fallback">
-              Form not loading?{" "}
-              <a href="https://tayrourke.github.io/tay-goes-fresh/" target="_blank" rel="noreferrer">
-                Visit tay-goes-fresh
-              </a>
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

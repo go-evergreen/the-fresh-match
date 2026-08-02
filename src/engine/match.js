@@ -817,7 +817,9 @@ export function buildPlaybook(ans, path, hero, face, body, supp) {
     week1.push("Coming off antiperspirant? Give FRESH deodorant 2–3 weeks to recalibrate.");
   }
   while (week1.length < 3 && path) {
-    week1.push("Patch-test new skincare if you're reactive — and when in doubt, message me your match.");
+    week1.push(
+      "Patch-test new skincare if you're reactive — and when in doubt, send your match to your Fresh Partner."
+    );
     break;
   }
 
@@ -919,7 +921,7 @@ export function countUniqueProducts(face, body, supp) {
 export function formatMatchSummary(summary, hero, playbook, quizUrl) {
   // Legacy alias — prefer formatTextBrief from lib/share.js
   const lines = [
-    "My Fresh Match — Ringana with Taylor",
+    "My Fresh Match — The Fresh Grove",
     summary ? `Profile: ${summary}` : null,
     "",
     "Start here:",

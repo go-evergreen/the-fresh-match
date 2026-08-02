@@ -2,7 +2,7 @@
 export function formatTextBrief({ summary, hero, playbook, restoreUrl, name }) {
   const who = name?.trim() ? `${name.trim()}'s Fresh Match` : "My Fresh Match";
   const lines = [
-    `${who} — Ringana with Taylor`,
+    `${who} — The Fresh Grove`,
     summary ? `Profile: ${summary}` : null,
     "",
     "Start here:",
@@ -20,6 +20,7 @@ export function formatTextBrief({ summary, hero, playbook, restoreUrl, name }) {
   lines.push(
     "",
     "Educational match only — not medical advice.",
+    "Please send this to the Fresh Partner who shared the quiz with you.",
     restoreUrl ? `Open this match: ${restoreUrl}` : null
   );
   return lines.filter((l) => l !== null).join("\n");
@@ -29,7 +30,7 @@ export function formatTextBrief({ summary, hero, playbook, restoreUrl, name }) {
 export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name }) {
   const who = name?.trim() ? `${name.trim()}'s Fresh Match` : "My Fresh Match";
   const lines = [
-    `${who} — Ringana with Taylor`,
+    `${who} — The Fresh Grove`,
     summary ? `Profile: ${summary}` : null,
     "",
     "Start here:",
@@ -45,6 +46,7 @@ export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name }) 
   lines.push(
     "",
     "Educational match only — not medical advice.",
+    "Please send this to the Fresh Partner who shared the quiz with you.",
     restoreUrl ? `Open this match: ${restoreUrl}` : null
   );
   return lines.filter((l) => l !== null).join("\n");
@@ -103,40 +105,4 @@ export function readMatchFromLocation(loc = window.location) {
   const m = hash.match(/[#&]m=([^&]+)/);
   if (!m?.[1]) return null;
   return decodeMatchState(decodeURIComponent(m[1]));
-}
-
-export const TAYLOR_IG = "toxinfreetay";
-/** E.164 digits only (country code + number) for wa.me deep links. */
-export const TAYLOR_WA_PHONE = "18054047812";
-export const TAYLOR_WA = "toxinfreetay";
-
-async function copyToClipboard(text) {
-  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return true;
-  }
-  return false;
-}
-
-/**
- * Copy the brief, then open Instagram DM to Taylor.
- * IG can't prefill message text — paste is the reliable path.
- */
-export async function openInstagramToTaylor(body, username = TAYLOR_IG) {
-  await copyToClipboard(body);
-  window.open(`https://ig.me/m/${username}`, "_blank", "noopener,noreferrer");
-}
-
-/**
- * Open a WhatsApp chat with Taylor, message prefilled — they just hit Send.
- */
-export async function openWhatsAppToTaylor(body, phoneDigits = TAYLOR_WA_PHONE) {
-  const text = body.startsWith("Hi ")
-    ? body
-    : `Hi Taylor — here's my Fresh Match:\n\n${body}`;
-  window.open(
-    `https://wa.me/${phoneDigits}?text=${encodeURIComponent(text)}`,
-    "_blank",
-    "noopener,noreferrer"
-  );
 }
