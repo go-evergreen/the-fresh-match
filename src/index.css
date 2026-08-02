@@ -302,6 +302,13 @@ button:focus-visible {
   max-width: 22rem;
 }
 
+.intro .copyright {
+  margin: 0.85rem auto 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  opacity: 0.45;
+}
+
 /* —— Intro legitimacy build-up —— */
 .legit-block {
   margin: 1.5rem 0 0.75rem;
@@ -1562,6 +1569,14 @@ button.linkish:hover {
 .legal strong {
   color: var(--ink-soft);
   font-weight: 500;
+}
+
+.legal .copyright {
+  margin: 1rem 0 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  opacity: 0.7;
 }
 
 @keyframes riseIn {

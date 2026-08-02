@@ -399,6 +399,7 @@ export default function App() {
                   An educational tool from an independent Ringana Fresh Partner — not an official
                   Ringana site, and not medical advice.
                 </p>
+                <p className="copyright">© 2026 Swaps Made Simple LLC</p>
               </div>
             </div>
 
@@ -723,6 +724,7 @@ export default function App() {
                 offering will be confirmed at launch, and some products sold in Europe will not be
                 available in the United States.
               </p>
+              <p className="copyright">© 2026 Swaps Made Simple LLC</p>
             </div>
           </div>
         )}
