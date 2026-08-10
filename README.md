@@ -1,8 +1,8 @@
 # The Fresh Match
 
-A Ringana product-match quiz for Taylor's network — skincare, personal care, and supplements matched from your answers, with product copy and links from [ringana.com](https://www.ringana.com).
+A Ringana product-match quiz for **The Fresh Grove** — skincare, personal care, and supplements matched from your answers, with product copy and links from [ringana.com](https://www.ringana.com).
 
-Built to match the **Ringana with Taylor** (tay-goes-fresh) pine + brass aesthetic.
+Built in the Fresh Grove pine + brass aesthetic. An exclusive team resource — share it with people you serve, and keep it within the circle.
 
 ## Develop
 
@@ -13,16 +13,12 @@ npm run dev
 
 ## Deploy to GitHub Pages
 
-```bash
-npm run build
-```
+Push to `main` — GitHub Actions builds and deploys automatically. The Vite `base` is set to `./` so asset paths work for project sites.
 
-Push the `dist/` folder to your GitHub Pages branch (or use Actions). The Vite `base` is set to `./` so asset paths work for project sites.
-
-Suggested repo name: `the-fresh-match` → `https://tayrourke.github.io/the-fresh-match/`
+Live: [https://go-evergreen.github.io/the-fresh-match/](https://go-evergreen.github.io/the-fresh-match/)
 
 ## Notes
 
 - Product links open `https://www.ringana.com/produkt/{slug}/?lang=en` only.
 - Product PNGs live in `public/products/` (sourced from the labeled Ringana product library).
-- Educational tool from an independent Fresh Partner — not an official Ringana site.
+- Educational tool from independent Fresh Partners — not an official Ringana site.
