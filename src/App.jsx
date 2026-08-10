@@ -24,7 +24,7 @@ import "./index.css";
 const QUIZ_URL =
   typeof window !== "undefined"
     ? `${window.location.origin}${window.location.pathname}`
-    : "https://tayrourke.github.io/the-fresh-match/";
+    : "https://go-evergreen.github.io/the-fresh-match/";
 
 const PATHS = [
   {
