@@ -280,10 +280,12 @@ export function buildBody(a) {
     out.push(item(milk, "Body", skinWhy));
     out.push(item(BODY.deodorant, "Deodorant", "No aluminium salts; lemon verbena supports sweat regulation rather than blocking it"));
     out.push(item(BODY.handBalm, "Hands", "Light enough to reapply constantly — and it works on pigment spots"));
-    if (bx.includes("legs") || has("legs")) {
+    // Specialty add-ons only when chosen in bodyExtras — never via has(),
+    // because has() is true for every key when the auto path is active.
+    if (bx.includes("legs")) {
       out.push(item(BODY.lightLegs, "Legs", "Cooling care for heavy, tired, end-of-day legs"));
     }
-    if (bx.includes("afterSun") || has("afterSun")) {
+    if (bx.includes("afterSun")) {
       out.push(item(FACE.afterSun, "After sun", "Post-outdoor soothe + soft glow — for body as much as face"));
     }
     if (bx.includes("scrub")) {
@@ -327,7 +329,8 @@ export function buildBody(a) {
   if (has("legs") || bx.includes("legs")) {
     out.push(item(BODY.lightLegs, "Legs", "Cooling botanical care for heavy, tired, or heat-swollen legs"));
   }
-  if (has("afterSun") || bx.includes("afterSun")) {
+  // afterSun is only offered in bodyExtras — not in the swaps list
+  if (bx.includes("afterSun")) {
     out.push(item(FACE.afterSun, "After sun", "Soothe after outdoor days and support a soft, even glow — not SPF"));
   }
   if (bx.includes("scrub")) {
