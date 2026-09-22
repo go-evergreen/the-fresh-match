@@ -82,7 +82,7 @@ export const FACE_Q = [
     note: "Optional — pick what you'd actually use.",
     options: [
       { v: "tint", label: "Light, natural coverage", sub: "Skincare-first tinted finish" },
-      { v: "mask", label: "A weekly enzyme reset", sub: "Fruit enzymes — no scrubbing grit" },
+      { v: "mask", label: "A weekly mask reset", sub: "Enzymes, clay, or peptides — I'll pick the right one" },
       { v: "scrub", label: "A gentle face & body scrub", sub: "Physical polish when you want it" },
       { v: "afterSun", label: "After-sun / soft glow care", sub: "Soothe + subtle tan support — not SPF" },
       { v: "lips", label: "Lip care", sub: "Clean, intensive balm" },

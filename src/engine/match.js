@@ -231,15 +231,21 @@ export function buildFace(a) {
     ex.includes("scrub") || (full && hasConcern("dullness") && a.skinType !== "sensitive" && !also.has("barrier"));
 
   if (wantMask) {
-    weekly.push(
-      item(
-        FACE.enzymeMask,
-        "1–2× weekly",
-        a.skinType === "sensitive" || a.skinType === "dry" || also.has("barrier")
-          ? "Enzymes, not grit — and every other week is plenty for your skin"
-          : "Enzymes dissolve dull cells instead of scrubbing them off"
-      )
-    );
+    const oilyishMask = a.skinType === "oily" || a.concern === "breakouts";
+    const gentleMask = a.skinType === "sensitive" || a.skinType === "dry" || also.has("barrier");
+    let mask = FACE.exfoliatingMask;
+    let maskWhy = "Fruit enzymes plus mild PHA — the weekly reset without grit";
+    if (gentleMask) {
+      mask = FACE.enzymeMask;
+      maskWhy = "Enzymes, not grit — and every other week is plenty for your skin";
+    } else if (oilyishMask) {
+      mask = FACE.purifyingMask;
+      maskWhy = "Clay that drinks extra oil, with panthenol so you don't end up tight";
+    } else if (a.concern === "aging" || also.has("aging")) {
+      mask = FACE.peptideMask;
+      maskWhy = "Peptides and paracress for a weekly firming pause — rinse off or leave on";
+    }
+    weekly.push(item(mask, "1–2× weekly", maskWhy));
   }
   if (wantScrub && !wantMask) {
     weekly.push(
@@ -250,7 +256,7 @@ export function buildFace(a) {
       item(
         FACE.scrub,
         "1× weekly · alternate",
-        "Skip the same week as the enzyme mask if your skin is easily stressed"
+        "Skip the same week as your mask if your skin is easily stressed"
       )
     );
   }
@@ -445,7 +451,10 @@ export function buildSupp(a) {
         addTargeted(SUPP.moodoo, "Plant extracts with magnesium and B vitamins for calm balance");
         break;
       case "joints":
-        addTargeted(SUPP.move, "Mobility support — highly absorbable turmeric, frankincense and algae calcium");
+        addTargeted(SUPP.flx, "A daily mobility drink — vegan collagen-type amino acids, chondroitin, and the minerals bones and muscles actually use");
+        if (depth === "layered") {
+          addTargeted(SUPP.move, "Capsule backup — highly absorbable turmeric and frankincense alongside the drink");
+        }
         break;
       case "beauty":
         addTargeted(SUPP.beautyHair, "Beauty from within — skin, hair and nails");
@@ -520,7 +529,7 @@ export function buildSupp(a) {
       }
     }
     if (life("active") && !goals.includes("joints")) {
-      addTargeted(SUPP.move, "Active weeks — mobility support that keeps joints in the conversation");
+      addTargeted(SUPP.flx, "Active weeks — a daily sip for joints, cartilage and muscles, not just another capsule");
     }
   };
 
@@ -740,7 +749,7 @@ export function buildHero(ans, path, face, body, supp) {
 
   // Starter / curious: prefer fewer boosters & extras
   if (intent === "starter" || intent === "curious" || ans.depth === "minimal") {
-    ["addsEffect", "addsGlow", "addsRepair", "enzymeMask", "tinted", "lipBalm", "skinPerfection"].forEach((id) => {
+    ["addsEffect", "addsGlow", "addsRepair", "enzymeMask", "exfoliatingMask", "peptideMask", "purifyingMask", "tinted", "lipBalm", "skinPerfection"].forEach((id) => {
       const row = scores.get(id);
       if (row) scores.set(id, { ...row, _score: row._score - 25 });
     });
