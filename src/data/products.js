@@ -67,7 +67,7 @@ export const FACE = {
     img: "./products/fresh/fresh-anti-wrinkle-serum.png",
     hero: "Hydroxypinacolone retinoate · bakuchiol · carnosine · kigelia africana · triple hyaluronic acid · nigella · olive leaf · ectoin",
     desc: "Its vitamin A derivative binds directly to skin's retinoid receptors — no metabolic conversion needed — so you get retinoid-level cell renewal and collagen and elastin stimulation without the usual irritation and peeling. Bakuchiol works alongside it as nature's retinol analogue; nigella and olive leaf extracts handle free radicals.",
-    use: "Evening is the classic choice for retinoid-type actives, though this one is gentle enough for twice daily. Ringana recommends layering it with ADDS effect for the strongest active load. Start every other night if your skin is new to retinoids.",
+    use: "Evening is the classic choice for retinoid-type actives, though this one is gentle enough for twice daily. Ringana recommends layering it with FRESH lifting booster for the strongest active load. Start every other night if your skin is new to retinoids.",
   },
   eyeSerum: {
     id: "eyeSerum",
@@ -82,7 +82,7 @@ export const FACE = {
   },
   skinPerfection: {
     id: "skinPerfection",
-    name: "FRESH skin perfection",
+    name: "FRESH skin perfecting cream",
     kind: "Recovery cream · dry & stressed skin",
     slug: "fresh-skin-perfection",
     url: productUrl("fresh-skin-perfection"),
@@ -111,7 +111,7 @@ export const FACE = {
     img: "./products/fresh/fresh-exfoliating-mask.png",
     hero: "Papaya · pineapple · kiwi enzymes · PHA · willow bark",
     desc: "An oil-to-milk enzyme mask — no grit. Fruit enzymes and mild PHA lift dull cells and extra sebum so skin looks smoother and more even, without a physical scrub.",
-    use: "Once or twice a week on damp skin. Massage about 10 seconds, leave 2–5 minutes, rinse. Sensitive skin: under a minute. Don't pair with overnight face treatment, and use sun protection after.",
+    use: "Once or twice a week on damp skin. Massage about 10 seconds, leave 2–5 minutes, rinse. Sensitive skin: under a minute. Don't pair with FRESH overnight retinal cream, and use sun protection after.",
   },
   peptideMask: {
     id: "peptideMask",
@@ -137,7 +137,7 @@ export const FACE = {
   },
   addsEffect: {
     id: "addsEffect",
-    name: "FRESH ADDS effect",
+    name: "FRESH lifting booster",
     kind: "Booster · firmness & expression lines",
     slug: "fresh-adds-effect",
     url: productUrl("fresh-adds-effect"),
@@ -148,7 +148,7 @@ export const FACE = {
   },
   addsGlow: {
     id: "addsGlow",
-    name: "FRESH ADDS glow",
+    name: "FRESH glow booster",
     kind: "Booster · tone, spots & radiance",
     slug: "fresh-adds-glow",
     url: productUrl("fresh-adds-glow"),
@@ -159,14 +159,14 @@ export const FACE = {
   },
   addsRepair: {
     id: "addsRepair",
-    name: "FRESH ADDS repair",
+    name: "FRESH clarifying booster",
     kind: "Booster · blemishes & irritation",
     slug: "fresh-adds-repair",
     url: productUrl("fresh-adds-repair"),
     img: "./products/fresh/fresh-adds-repair.png",
     hero: "Probiotic ferments · natural salicylic acid · upcycled apple peel extract",
     desc: "Natural salicylic acid does the clarifying, probiotic ferments keep the skin microbiome balanced while it works, and upcycled apple peel extract rounds it out. It regulates sebum and calms inflammation — clearing without the stripped, angry aftermath.",
-    use: "One to two pumps mixed into your serum. You can zone-treat: ADDS repair on an irritated patch and ADDS glow on the rest of your face in the same routine.",
+    use: "One to two pumps mixed into your serum. You can zone-treat: FRESH clarifying booster on an irritated patch and FRESH glow booster on the rest of your face in the same routine.",
   },
   creamLight: {
     id: "creamLight",
@@ -221,7 +221,7 @@ export const FACE = {
     img: "./products/fresh/fresh-lip-balm-classic.png",
     hero: "Plant butters & oils",
     desc: "Velvet-soft lips with zero petroleum — the clean answer to the balm most people reapply fifteen times a day.",
-    use: "Whenever. If lips are badly cracked, layer FRESH skin perfection underneath at night as a mask.",
+    use: "Whenever. If lips are badly cracked, layer FRESH skin perfecting cream underneath at night as a mask.",
   },
   menMoisturiser: {
     id: "menMoisturiser",

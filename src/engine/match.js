@@ -812,7 +812,7 @@ export function buildPlaybook(ans, path, hero, face, body, supp) {
     if (ans.concern === "aging") week1.push(ans.skinType === "sensitive"
       ? "Sensitive + firmness: hydro serum daily; anti wrinkle every other night until skin stays calm."
       : "If you're new to retinoid-type actives, start the anti wrinkle serum every other night.");
-    else if (ans.concern === "breakouts") week1.push("Zone ADDS repair on active spots; give it 2–3 weeks before judging.");
+    else if (ans.concern === "breakouts") week1.push("Zone clarifying booster on active spots; give it 2–3 weeks before judging.");
     else week1.push("Give any new booster 2–3 weeks before you decide it's not for you.");
   }
   if (path === "supp" || path === "both") {
