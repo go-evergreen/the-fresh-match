@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { isPartnerShopUrl } from "../lib/shopLinks";
 
 export default function ProductRow({ product, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -23,6 +24,7 @@ export default function ProductRow({ product, defaultOpen = false }) {
           {product.step && <div className="step">{product.step}</div>}
           <div className="name">{product.name}</div>
           <div className="kind">{product.kind}</div>
+          {product.comingSoon && <span className="soon-chip">Coming soon</span>}
         </div>
         <span className="chevron" aria-hidden>▾</span>
       </button>
@@ -56,7 +58,7 @@ export default function ProductRow({ product, defaultOpen = false }) {
                 rel="noreferrer"
                 tabIndex={open ? 0 : -1}
               >
-                View on ringana.com →
+                {isPartnerShopUrl(product.url) ? "Shop this →" : "View on ringana.com →"}
               </a>
             )}
           </div>

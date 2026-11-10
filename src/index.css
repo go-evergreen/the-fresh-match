@@ -303,19 +303,23 @@ button:focus-visible {
 }
 
 .intro .copyright {
-  margin: 0.85rem auto 0;
+  margin: 1.35rem auto 0;
   font-size: 0.68rem;
   letter-spacing: 0.06em;
-  opacity: 0.45;
+  text-align: center;
+  color: var(--ink-soft);
+  opacity: 0.7;
 }
 
 .intro .exclusive-note {
-  margin: 0.45rem auto 0;
+  margin: 0.4rem auto 0;
   max-width: 22rem;
   font-size: 0.72rem;
   line-height: 1.55;
   letter-spacing: 0.02em;
-  opacity: 0.5;
+  text-align: center;
+  color: var(--ink-soft);
+  opacity: 0.75;
 }
 
 /* —— Intro legitimacy build-up —— */
@@ -909,6 +913,23 @@ button:focus-visible {
   line-height: 1.55;
 }
 
+.recommend-note,
+.shop-note {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 0.95rem 1.1rem;
+  border: 1.5px solid #e8e2da;
+  margin: 0 0 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.shop-note strong {
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
 .playbook-card {
   background: var(--white);
   border-radius: 20px;
@@ -1384,6 +1405,19 @@ button:focus-visible {
 
 .why-line strong {
   font-weight: 500;
+}
+
+.soon-chip {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--brass-deep, #9a7530);
+  border: 1px solid rgba(154, 117, 48, 0.5);
+  border-radius: 100px;
+  padding: 0.12rem 0.5rem;
 }
 
 .product-link {
@@ -1920,4 +1954,72 @@ button.linkish:hover {
   .leave-cols {
     grid-template-columns: 1fr;
   }
+}
+
+.shelf-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.shelf-prompt-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 37, 25, 0.45);
+  border: none;
+  cursor: pointer;
+}
+
+.shelf-prompt-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  background: var(--white);
+  border-radius: 18px;
+  padding: 1.25rem 1.2rem 1.1rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+}
+
+.shelf-prompt-card h3 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  color: var(--pine);
+  margin-bottom: 0.35rem;
+}
+
+.shelf-prompt-card p {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  margin-bottom: 0.9rem;
+}
+
+.shelf-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.shelf-prompt-go {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  background: var(--pine);
+  color: var(--linen);
+  border-radius: 100px;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.shelf-prompt-later {
+  border-radius: 100px;
+  padding: 0.7rem 1rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
 }

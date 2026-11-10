@@ -9,28 +9,28 @@ const STATS = [
 
 const POINTS = [
   [
-    "Each product, about twice a week",
-    "Not stockpiled for a year. Ringana makes on a needs basis — on average each product roughly twice weekly — so actives arrive potent. Every bottle carries a real expiration date.",
+    "Made about twice a week",
+    "Not a warehouse full of last year's stock. Each product is made fresh, and every bottle has a real expiration date.",
   ],
   [
     "Their campus. Their formulas.",
-    "Developed and produced in-house in Austria today — with U.S. production coming online so American customers get the same fresh standard, closer to home.",
+    "Made in-house in Austria. U.S. production is coming to Virginia, so the same fresh standard lands closer to home.",
   ],
   [
-    "Airless glass, by design",
-    "A patented airless system means product never meets air. Reactive plant actives stay bioactive without a cocktail of synthetic preservatives holding them together.",
+    "Airless glass",
+    "The bottle keeps air out. The plants stay potent, without a pile of preservatives doing the job.",
   ],
   [
-    "Plant actives at full strength",
-    "No mineral oils, no microplastics, no fillers standing in for function. The bar is totally toxin free — and they publish transparency instead of marketing fluff.",
+    "Totally toxin free",
+    "No mineral oils, no microplastics, no fillers standing in for the formula. They publish what's in each product.",
   ],
   [
-    "One standard, whole routine",
-    "FRESH skincare, CAPS supplements, PACKS nutrition — same uncompromising rules across skin and inside care, so your ritual isn't a patchwork of conflicting brands.",
+    "Skin and supplements, same rules",
+    "FRESH, CAPS, and PACKS are held to one standard. What goes on your skin and what you take come from the same line.",
   ],
   [
-    "America is just opening",
-    "After Europe and Latin America, Ringana is investing in U.S. production in Virginia. The community that shows up now gets to learn the line before it becomes noise.",
+    "Just opening in America",
+    "Europe and Latin America already have it. You're in the early U.S. chapter.",
   ],
 ];
 
@@ -146,14 +146,13 @@ export function LegitSection() {
           <span className="legit-diamond" />
           <span className="legit-line" />
         </div>
-        <div className="legit-eyebrow">Why this line is different</div>
+        <div className="legit-eyebrow">Why Ringana</div>
         <h2 className="legit-title">
-          Not another &ldquo;clean&rdquo; brand with a pretty label — <em>thirty years</em> of
-          doing it the hard way.
+          Made fresh, <em>on purpose</em>.
         </h2>
         <p className="legit-lede">
-          Still family-led. Made fresh on purpose. So what goes on and in your body doesn&apos;t
-          need an apology.
+          Family-led for thirty years. Small batches, their own campus, airless glass. That&apos;s
+          why a short list from this line is worth having.
         </p>
       </div>
 
@@ -183,8 +182,7 @@ export function LegitSection() {
       </ol>
 
       <p className="legit-foot">
-        This quiz is how The Fresh Grove helps you find your match without the overwhelm — then
-        talk it through with the partner who shared it.
+        That&apos;s the line. Pick one up top, then talk it through with the partner who sent you this.
       </p>
     </section>
   );

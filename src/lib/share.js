@@ -19,6 +19,7 @@ export function formatTextBrief({ summary, hero, playbook, restoreUrl, name }) {
   }
   lines.push(
     "",
+    "This is just a recommendation, not a prescription. Please check it with your Fresh Partner before you order.",
     "Educational match only — not medical advice.",
     "Please send this to the Fresh Partner who shared the quiz with you.",
     restoreUrl ? `Open this match: ${restoreUrl}` : null
@@ -27,11 +28,13 @@ export function formatTextBrief({ summary, hero, playbook, restoreUrl, name }) {
 }
 
 /** Same brief with ringana.com links for shopping. */
-export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name }) {
+export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name, code, shopHost }) {
   const who = name?.trim() ? `${name.trim()}'s Fresh Match` : "My Fresh Match";
   const lines = [
     `${who} — The Fresh Grove`,
     summary ? `Profile: ${summary}` : null,
+    shopHost ? `Shop: https://${shopHost}/?lang=en` : null,
+    code ? `Customer code: ${code} — in the cart, Available Vouchers, then Redeem.` : null,
     "",
     "Start here:",
     ...(hero?.items || []).map((p, i) => `${i + 1}. ${p.name}${p.url ? `\n   ${p.url}` : ""}`),
@@ -45,6 +48,7 @@ export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name }) 
   }
   lines.push(
     "",
+    "This is just a recommendation, not a prescription. Please check it with your Fresh Partner before you order.",
     "Educational match only — not medical advice.",
     "Please send this to the Fresh Partner who shared the quiz with you.",
     restoreUrl ? `Open this match: ${restoreUrl}` : null
@@ -94,10 +98,12 @@ export function decodeMatchState(encoded) {
   }
 }
 
-export function buildRestoreUrl(baseUrl, { path, ans, name }) {
+export function buildRestoreUrl(baseUrl, { path, ans, name, search }) {
   const token = encodeMatchState({ path, ans, name });
   const clean = baseUrl.replace(/#.*$/, "").replace(/\?.*$/, "");
-  return `${clean}#m=${token}`;
+  const q = String(search || "");
+  const query = q ? (q.charAt(0) === "?" ? q : `?${q}`) : "";
+  return `${clean}${query}#m=${token}`;
 }
 
 export function readMatchFromLocation(loc = window.location) {

@@ -13,12 +13,14 @@ import {
 import { ProductList } from "./components/ProductRow";
 import { LeaveBehindCard } from "./components/LeaveBehindCard";
 import { LegitSection } from "./components/LegitSection";
+import { ShelfPrompt } from "./components/ShelfPrompt";
 import {
   formatTextBrief,
   formatLinksBrief,
   buildRestoreUrl,
   readMatchFromLocation,
 } from "./lib/share";
+import { readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
 import "./index.css";
 
 const QUIZ_URL =
@@ -29,21 +31,18 @@ const QUIZ_URL =
 const PATHS = [
   {
     v: "skin",
-    t: "Skincare & personal care",
-    s: "Face, body, hair — matched to your skin",
-    meta: "~12 questions",
+    t: "Face, body, and hair",
+    s: "How you wash, and the products you use every day",
   },
   {
     v: "supp",
     t: "Supplements",
-    s: "Overall foundation or targeted — matched to what you want more of",
-    meta: "~5 questions",
+    s: "A daily base, or something more specific",
   },
   {
     v: "both",
-    t: "Inside & out",
-    s: "The full match — skin, swaps, and supplements",
-    meta: "~16 questions",
+    t: "The whole routine",
+    s: "Skin, everyday products, and supplements",
   },
 ];
 
@@ -107,7 +106,7 @@ export default function App() {
     const url = buildRestoreUrl(QUIZ_URL, { path, ans, name: guestName });
     const hash = url.includes("#") ? url.slice(url.indexOf("#")) : "";
     if (hash && window.location.hash !== hash) {
-      window.history.replaceState(null, "", hash);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
     }
   }, [screen, path, ans, guestName]);
 
@@ -241,17 +240,27 @@ export default function App() {
     return typeof n === "number" ? n : 0;
   }, [screen, face, body, supp]);
 
+  const partnerShop = useMemo(() => readPartnerShop(), []);
+  const shelfInvite = useMemo(() => readShelfInvite(), []);
+  const shopSearch = typeof window !== "undefined" ? window.location.search : "";
+  const linkItems = (items) => withPartnerLinks(items, partnerShop);
+
   const restoreUrl = useMemo(
-    () => (path ? buildRestoreUrl(QUIZ_URL, { path, ans, name: guestName }) : QUIZ_URL),
-    [path, ans, guestName]
+    () =>
+      path
+        ? buildRestoreUrl(QUIZ_URL, { path, ans, name: guestName, search: shopSearch })
+        : `${QUIZ_URL.replace(/[?#].*$/, "")}${shopSearch}`,
+    [path, ans, guestName, shopSearch]
   );
 
   const briefPayload = () => ({
     summary,
-    hero,
-    playbook,
+    hero: hero ? { ...hero, items: linkItems(hero.items) } : hero,
+    playbook: playbook ? { ...playbook, addNext: linkItems(playbook.addNext) } : playbook,
     restoreUrl,
     name: guestName,
+    code: partnerShop.code,
+    shopHost: partnerShop.host,
   });
 
   const copyText = async () => {
@@ -323,23 +332,22 @@ export default function App() {
           <div className="intro">
             <div className="intro-hero">
               <div className="intro-copy">
-                <div className="eyebrow">A two-minute match</div>
+                <div className="eyebrow">The Fresh Match</div>
                 <h1>
-                  The Fresh <em>Match</em>
+                  What to <em>start</em> with
                 </h1>
                 <p className="intro-lead">
-                  A Fresh Grove resource to help you find the Ringana that actually fits — without
-                  the overwhelm.
+                  Ringana makes a full line. This asks how you wash, what your skin is doing, and
+                  what you want more of — then hands you a short list to shop with your Fresh Partner.
                 </p>
 
-                <div className="path-label">What are you here for?</div>
+                <div className="path-label">Where do you want to start?</div>
                 <div className="path-grid">
                   {PATHS.map((o) => (
                     <button key={o.v} type="button" className="path-btn" onClick={() => start(o.v)}>
                       <span className="path-btn-main">
                         <span className="t">{o.t}</span>
                         <span className="s">{o.s}</span>
-                        <span className="m">{o.meta}</span>
                       </span>
                       <span className="path-arrow" aria-hidden>
                         →
@@ -348,18 +356,17 @@ export default function App() {
                   ))}
                 </div>
                 <p className="intro-note">
-                  An educational tool from independent Ringana Fresh Partners — not an official
-                  Ringana site, and not medical advice.
-                </p>
-                <p className="copyright">© 2026 The Fresh Grove</p>
-                <p className="exclusive-note">
-                  An exclusive resource for our circle — please enjoy it with the partner who shared
-                  it, and kindly keep it within The Fresh Grove.
+                  This quiz is just a recommendation. Please check it with your Fresh Partner
+                  before you order. It is not an official Ringana site, and not medical advice.
                 </p>
               </div>
             </div>
 
             <LegitSection />
+            <p className="copyright">© 2026 The Fresh Grove</p>
+            <p className="exclusive-note">
+              Your Fresh Partner shared this with you. Please keep it in our circle.
+            </p>
           </div>
         )}
 
@@ -469,11 +476,30 @@ export default function App() {
               summary={summary}
             />
 
+            <p className="recommend-note">
+              This quiz is just a recommendation from your answers, not a prescription. Please
+              check it with your Fresh Partner before you order.
+            </p>
+
+            {(partnerShop.origin || partnerShop.weblink || partnerShop.code) && (
+              <p className="shop-note">
+                {partnerShop.host
+                  ? `Every product that is on the US shop opens at ${partnerShop.host}.`
+                  : "Every product that is on the shop opens on your partner’s Ringana link."}
+                {partnerShop.code ? (
+                  <>
+                    {" "}
+                    Customer code <strong>{partnerShop.code}</strong> — in the cart, Available Vouchers, then Redeem.
+                  </>
+                ) : null}
+              </p>
+            )}
+
             {hero?.items?.length > 0 && (
               <>
                 <SectionLabel>{hero.title}</SectionLabel>
                 <p className="section-blurb">{hero.subtitle}</p>
-                <ProductList items={hero.items} openFirst />
+                <ProductList items={linkItems(hero.items)} openFirst />
               </>
             )}
 
@@ -486,7 +512,7 @@ export default function App() {
 
             {playbook && (
               <div className="playbook-card">
-                <div className="insight-label">Your first-order playbook</div>
+                <div className="insight-label">How to start</div>
                 <div className="playbook-grid">
                   <div>
                     <h4>Buy first</h4>
@@ -533,13 +559,13 @@ export default function App() {
             {face && (
               <>
                 <SectionLabel>Morning</SectionLabel>
-                <ProductList items={face.am} />
+                <ProductList items={linkItems(face.am)} />
                 <SectionLabel>Evening</SectionLabel>
-                <ProductList items={face.pm} />
+                <ProductList items={linkItems(face.pm)} />
                 {face.weekly.length > 0 && (
                   <>
                     <SectionLabel>Weekly</SectionLabel>
-                    <ProductList items={face.weekly} />
+                    <ProductList items={linkItems(face.weekly)} />
                   </>
                 )}
               </>
@@ -548,7 +574,7 @@ export default function App() {
             {body && body.length > 0 && (
               <>
                 <SectionLabel>Your everyday swaps</SectionLabel>
-                <ProductList items={body} />
+                <ProductList items={linkItems(body)} />
               </>
             )}
 
@@ -559,7 +585,7 @@ export default function App() {
                     <SectionLabel>
                       {supp.approach === "targeted" ? "Suggested foundation" : "Overall foundation"}
                     </SectionLabel>
-                    <ProductList items={supp.daily} />
+                    <ProductList items={linkItems(supp.daily)} />
                   </>
                 )}
                 {supp.targeted.length > 0 && (
@@ -567,7 +593,7 @@ export default function App() {
                     <SectionLabel>
                       {supp.approach === "overall" ? "Focused add-ons" : "Targeted for your goals"}
                     </SectionLabel>
-                    <ProductList items={supp.targeted} />
+                    <ProductList items={linkItems(supp.targeted)} />
                   </>
                 )}
               </>
@@ -676,6 +702,13 @@ export default function App() {
           </div>
         )}
       </div>
+      <ShelfPrompt
+        active={screen === "results"}
+        href={shelfInvite}
+        title="Want this on your shelf?"
+        body="Your Fresh Partner's Fresh Shelf keeps this match, and you can shop from there too."
+        action="Open Fresh Shelf"
+      />
     </div>
   );
 }
