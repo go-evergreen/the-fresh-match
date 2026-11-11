@@ -84,6 +84,8 @@ function partnerHost(raw) {
   if (!value || value.includes("..") || BARE.has(value)) return "";
   if (!(value.endsWith(".ringana.us") || value.endsWith(".ringana.com"))) return "";
   if (!/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$/.test(value)) return "";
+  /* Partners sometimes save the .com shop. Customers in the U.S. shop on .us. */
+  if (value.endsWith(".ringana.com")) value = value.slice(0, -4) + ".us";
   return value;
 }
 
@@ -129,7 +131,7 @@ export function productHref(shop, slug) {
   const path = `/produkt/${us}/?lang=en`;
   if (shop.origin) return shop.origin + path;
   if (shop.weblink) {
-    return `https://www.ringana.com/produkt/${us}/?lang=en&weblink=${encodeURIComponent(shop.weblink)}`;
+    return `https://www.ringana.us/produkt/${us}/?lang=en&weblink=${encodeURIComponent(shop.weblink)}`;
   }
   return "";
 }
@@ -139,18 +141,39 @@ export function decorateProduct(product, shop) {
   const us = usPath(product.slug);
   if (!us) return { ...product, url: "", comingSoon: true };
   const comingSoon = NOT_YET.has(us);
-  const href = productHref(shop, product.slug);
-  if (href) return { ...product, url: href, comingSoon };
-  return { ...product, comingSoon };
+  const href = productHref(shop, product.slug) || `https://www.ringana.us/produkt/${us}/?lang=en`;
+  return { ...product, url: href, comingSoon };
 }
 
 export function withPartnerLinks(items, shop) {
   return (items || []).map((product) => decorateProduct(product, shop));
 }
 
-/** Only a real Fresh Shelf door. Anything else is dropped. */
+function shelfSlugOk(slug) {
+  return /^[a-z0-9][a-z0-9-]{1,39}$/.test(slug) && slug !== "join" && slug !== "taylor";
+}
+
+function shelfHrefFor(slug) {
+  const clean = String(slug || "").trim().toLowerCase();
+  if (clean === "tay") return "https://shelf.taygoesfresh.com/?with=tay";
+  if (!shelfSlugOk(clean)) return "";
+  return `https://shelf.thefreshgrove.team/?with=${encodeURIComponent(clean)}#with=${encodeURIComponent(clean)}`;
+}
+
+function firstFromSlug(slug) {
+  const clean = String(slug || "").trim().toLowerCase();
+  if (clean === "tay") return "Taylor";
+  const bit = clean.split("-").filter(Boolean)[0] || "";
+  if (!/^[a-z][a-z0-9]{0,30}$/.test(bit)) return "";
+  return bit.charAt(0).toUpperCase() + bit.slice(1);
+}
+
+/** Only a real Fresh Shelf door. A bare with= slug is enough. */
 export function readShelfInvite(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const raw = new URLSearchParams(loc.search || "").get("shelf") || "";
+  const params = new URLSearchParams(loc.search || "");
+  const direct = shelfHrefFor(params.get("with") || "");
+  if (direct) return direct;
+  const raw = params.get("shelf") || "";
   if (!raw) return "";
   let url;
   try {
@@ -162,8 +185,22 @@ export function readShelfInvite(loc = typeof window !== "undefined" ? window.loc
   const host = url.hostname.toLowerCase();
   if (!SHELF_HOSTS.has(host)) return "";
   const slug = String(url.searchParams.get("with") || "").trim();
-  if (!/^[A-Za-z0-9][A-Za-z0-9-]{0,48}$/.test(slug)) return "";
-  return `https://${host}/?with=${encodeURIComponent(slug)}`;
+  return shelfHrefFor(slug);
+}
+
+/** First name for the shelf prompt. who= wins, then the shelf slug. */
+export function readPartnerFirst(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
+  const params = new URLSearchParams(loc.search || "");
+  const given = String(params.get("who") || "").trim().replace(/\s+/g, " ").split(" ")[0] || "";
+  if (/^[A-Za-z][A-Za-z.'-]{0,30}$/.test(given)) return given;
+  const fromWith = firstFromSlug(params.get("with") || "");
+  if (fromWith) return fromWith;
+  try {
+    const shelf = new URL(params.get("shelf") || "");
+    return firstFromSlug(shelf.searchParams.get("with") || "");
+  } catch {
+    return "";
+  }
 }
 
 export function isPartnerShopUrl(url) {

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const WAIT_MS = 60000;
 
 /** After a minute on results, offer that partner's Fresh Shelf. */
-export function ShelfPrompt({ active, href, title, body, action }) {
+export function ShelfPrompt({ active, href, name }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -37,6 +37,13 @@ export function ShelfPrompt({ active, href, title, body, action }) {
   }, [open, href]);
 
   if (!open || !href) return null;
+
+  const who = String(name || "").trim();
+  const title = "Want to keep your results and learn more about the products?";
+  const appLine = who ? `Download ${who}’s Fresh Shelf app.` : "Download the Fresh Shelf app.";
+  const message = who ? `message ${who} directly` : "message them directly";
+  const body = `${appLine} Add products to your shelf, ${message}, build your wishlist, get notified about sales, and more.`;
+  const action = "Open Your Fresh Shelf";
 
   const dismiss = () => {
     setOpen(false);

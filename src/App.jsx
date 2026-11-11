@@ -20,7 +20,7 @@ import {
   buildRestoreUrl,
   readMatchFromLocation,
 } from "./lib/share";
-import { readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
+import { readPartnerFirst, readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
 import "./index.css";
 
 const QUIZ_URL =
@@ -242,6 +242,7 @@ export default function App() {
 
   const partnerShop = useMemo(() => readPartnerShop(), []);
   const shelfInvite = useMemo(() => readShelfInvite(), []);
+  const partnerFirst = useMemo(() => readPartnerFirst(), []);
   const shopSearch = typeof window !== "undefined" ? window.location.search : "";
   const linkItems = (items) => withPartnerLinks(items, partnerShop);
 
@@ -338,7 +339,7 @@ export default function App() {
                 </h1>
                 <p className="intro-lead">
                   Ringana makes a full line. This asks how you wash, what your skin is doing, and
-                  what you want more of — then hands you a short list to shop with your Fresh Partner.
+                  what you want more of — then hands you a short list to start with.
                 </p>
 
                 <div className="path-label">Where do you want to start?</div>
@@ -356,8 +357,8 @@ export default function App() {
                   ))}
                 </div>
                 <p className="intro-note">
-                  This quiz is just a recommendation. Please check it with your Fresh Partner
-                  before you order. It is not an official Ringana site, and not medical advice.
+                  A recommendation from your answers, not a prescription. Not an official Ringana
+                  site, and not medical advice.
                 </p>
               </div>
             </div>
@@ -365,7 +366,7 @@ export default function App() {
             <LegitSection />
             <p className="copyright">© 2026 The Fresh Grove</p>
             <p className="exclusive-note">
-              Your Fresh Partner shared this with you. Please keep it in our circle.
+              Someone shared this with you. Please keep it between you and them.
             </p>
           </div>
         )}
@@ -456,8 +457,8 @@ export default function App() {
           <div className="results">
             {restoredBanner && (
               <div className="restore-banner">
-                Restored a shared match — scroll to the bottom when you&apos;re ready to name it or
-                send it to your Fresh Partner.
+                Restored a shared match. Scroll to the bottom when you want to name it or send it
+                back.
               </div>
             )}
 
@@ -477,23 +478,18 @@ export default function App() {
             />
 
             <p className="recommend-note">
-              This quiz is just a recommendation from your answers, not a prescription. Please
-              check it with your Fresh Partner before you order.
+              A match from your answers, not a prescription. The person who sent this can help you
+              choose what to order first.
             </p>
 
-            {(partnerShop.origin || partnerShop.weblink || partnerShop.code) && (
-              <p className="shop-note">
-                {partnerShop.host
-                  ? `Every product that is on the US shop opens at ${partnerShop.host}.`
-                  : "Every product that is on the shop opens on your partner’s Ringana link."}
-                {partnerShop.code ? (
-                  <>
-                    {" "}
-                    Customer code <strong>{partnerShop.code}</strong> — in the cart, Available Vouchers, then Redeem.
-                  </>
-                ) : null}
-              </p>
-            )}
+            {partnerShop.code ? (
+              <aside className="code-block" aria-label="Your savings code">
+                <p className="code-kicker">Your first order</p>
+                <p>
+                  Use <strong>{partnerShop.code}</strong> to save $25 on your first order of $60+.
+                </p>
+              </aside>
+            ) : null}
 
             {hero?.items?.length > 0 && (
               <>
@@ -542,8 +538,8 @@ export default function App() {
                   </ul>
                 </div>
                 <p className="playbook-note">
-                  Screenshot your ritual card or send the brief below to the Fresh Partner who
-                  shared this with you — they&apos;ll help you decide what to start with.
+                  Send this to the person who shared it with you. They can help you decide what to
+                  start with.
                 </p>
               </div>
             )}
@@ -612,7 +608,7 @@ export default function App() {
                 ],
                 [
                   "Talk it through with your partner",
-                  "Your shortlist is a starting point. Send your results to the Fresh Partner who shared this — they'll walk you through what to begin with.",
+                  "Your shortlist is a starting point. Send it to the person who shared this quiz. They can help you decide what to begin with.",
                 ],
               ].map(([t, d]) => (
                 <div className="edu-item" key={t}>
@@ -624,11 +620,10 @@ export default function App() {
 
             <div className="cta-block share-footer">
               <div className="cta-eyebrow">Save &amp; send</div>
-              <h3>Send this to your Fresh Partner</h3>
+              <h3>Send this back</h3>
               <p>
-                Name it for a screenshot, then share or copy the brief — send it to the Fresh
-                Partner who shared this quiz with you so they can open the exact same results and
-                walk you through your match.
+                Name it if you want, then share the brief. The person who sent you the quiz can
+                open the same results and help you decide what to order first.
               </p>
 
               <label className="name-field name-field-on-pine">
@@ -679,19 +674,16 @@ export default function App() {
 
             <div className="legal">
               <p>
-                <strong>The important stuff:</strong> This quiz is an educational tool created by
-                The Fresh Grove, a team of independent Ringana Fresh Partners (pending U.S. launch).
-                It is not an official Ringana website or assessment, and product information is drawn
-                from Ringana&apos;s published product pages on ringana.com. Matches are general
-                suggestions based on your answers — not personalized medical, dermatological, or
-                nutritional advice. Statements regarding supplements have not been evaluated by the
-                Food and Drug Administration; these products are not intended to diagnose, treat,
-                cure, or prevent any disease. If you are pregnant, nursing, taking medication, or
-                managing a health condition, talk with your healthcare provider before starting any
-                new supplement. Patch-test new skincare if you have sensitive or reactive skin.
-                Product details reflect Ringana&apos;s current international lineup — the final U.S.
-                offering will be confirmed at launch, and some products sold in Europe will not be
-                available in the United States.
+                <strong>The important stuff:</strong> This quiz is an educational tool from The Fresh
+                Grove, a team of independent Ringana partners. It is not an official Ringana website
+                or assessment. Product information is drawn from Ringana&apos;s published pages.
+                Matches are general suggestions from your answers — not personalized medical,
+                dermatological, or nutritional advice. Statements about supplements have not been
+                evaluated by the Food and Drug Administration. These products are not intended to
+                diagnose, treat, cure, or prevent any disease. If you are pregnant, nursing, taking
+                medication, or managing a health condition, talk with your healthcare provider before
+                starting a new supplement. Patch-test new skincare if your skin is sensitive or
+                reactive. Some products sold in Europe are not on the U.S. shop.
               </p>
               <p className="copyright">© 2026 The Fresh Grove</p>
               <p className="exclusive-note">
@@ -705,9 +697,7 @@ export default function App() {
       <ShelfPrompt
         active={screen === "results"}
         href={shelfInvite}
-        title="Want this on your shelf?"
-        body="Your Fresh Partner's Fresh Shelf keeps this match, and you can shop from there too."
-        action="Open Fresh Shelf"
+        name={partnerFirst}
       />
     </div>
   );

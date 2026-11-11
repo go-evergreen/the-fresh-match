@@ -963,7 +963,7 @@ export function buildPlaybook(ans, path, hero, face, body, supp) {
   }
   while (week1.length < 3 && path) {
     week1.push(
-      "Patch-test new skincare if you're reactive — and when in doubt, send your match to your Fresh Partner."
+      "Patch-test new skincare if you're reactive — and send this match if you want help choosing."
     );
     break;
   }
@@ -1082,7 +1082,7 @@ export function formatMatchSummary(summary, hero, playbook, quizUrl) {
   }
   lines.push(
     "",
-    "This is just a recommendation, not a prescription. Please check it with your Fresh Partner before you order.",
+    "A match from your answers, not a prescription.",
     "Educational match only — not medical advice.",
     quizUrl ? `Open match: ${quizUrl}` : null
   );

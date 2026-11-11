@@ -99,7 +99,7 @@ export function LeaveBehindCard({ name, face, body, supp, path, summary }) {
               </div>
             )}
 
-            <p className="leave-foot">Screenshot this · send it to your Fresh Partner</p>
+            <p className="leave-foot">Screenshot this · send it to the person who shared it</p>
           </div>
         )}
       </div>

@@ -19,22 +19,22 @@ export function formatTextBrief({ summary, hero, playbook, restoreUrl, name }) {
   }
   lines.push(
     "",
-    "This is just a recommendation, not a prescription. Please check it with your Fresh Partner before you order.",
+    "A match from your answers, not a prescription.",
     "Educational match only — not medical advice.",
-    "Please send this to the Fresh Partner who shared the quiz with you.",
+    "Send this to the person who shared the quiz with you.",
     restoreUrl ? `Open this match: ${restoreUrl}` : null
   );
   return lines.filter((l) => l !== null).join("\n");
 }
 
-/** Same brief with ringana.com links for shopping. */
+/** Same brief with the partner's shop links. */
 export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name, code, shopHost }) {
   const who = name?.trim() ? `${name.trim()}'s Fresh Match` : "My Fresh Match";
   const lines = [
     `${who} — The Fresh Grove`,
     summary ? `Profile: ${summary}` : null,
     shopHost ? `Shop: https://${shopHost}/?lang=en` : null,
-    code ? `Customer code: ${code} — in the cart, Available Vouchers, then Redeem.` : null,
+    code ? `Use ${code} to save $25 on your first order of $60+.` : null,
     "",
     "Start here:",
     ...(hero?.items || []).map((p, i) => `${i + 1}. ${p.name}${p.url ? `\n   ${p.url}` : ""}`),
@@ -48,9 +48,9 @@ export function formatLinksBrief({ summary, hero, playbook, restoreUrl, name, co
   }
   lines.push(
     "",
-    "This is just a recommendation, not a prescription. Please check it with your Fresh Partner before you order.",
+    "A match from your answers, not a prescription.",
     "Educational match only — not medical advice.",
-    "Please send this to the Fresh Partner who shared the quiz with you.",
+    "Send this to the person who shared the quiz with you.",
     restoreUrl ? `Open this match: ${restoreUrl}` : null
   );
   return lines.filter((l) => l !== null).join("\n");
