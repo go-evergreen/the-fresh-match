@@ -356,10 +356,6 @@ export default function App() {
                     </button>
                   ))}
                 </div>
-                <p className="intro-note">
-                  A recommendation from your answers, not a prescription. Not an official Ringana
-                  site, and not medical advice.
-                </p>
               </div>
             </div>
 

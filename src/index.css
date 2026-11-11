@@ -294,14 +294,6 @@ button:focus-visible {
   transition: transform 0.2s, color 0.2s;
 }
 
-.intro-note {
-  margin: 1.75rem auto 0;
-  font-size: 0.75rem;
-  line-height: 1.6;
-  opacity: 0.55;
-  max-width: 22rem;
-}
-
 .intro .copyright {
   margin: 1.35rem auto 0;
   font-size: 0.68rem;
