@@ -529,19 +529,6 @@ button:focus-visible {
   margin: 0;
 }
 
-.legit-foot {
-  margin: 1.65rem auto 0;
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(28, 50, 39, 0.1);
-  font-size: 1.02rem;
-  line-height: 1.55;
-  color: var(--pine);
-  font-style: italic;
-  font-family: var(--display);
-  max-width: 30rem;
-  text-align: center;
-}
-
 /* —— Quiz (toxin-audit polish, pine + brass) —— */
 .quiz {
   padding-top: 1.25rem;

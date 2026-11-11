@@ -180,10 +180,6 @@ export function LegitSection() {
           <LegitItem key={title} index={idx} title={title} body={body} />
         ))}
       </ol>
-
-      <p className="legit-foot">
-        That&apos;s the line. Pick one up top, then talk it through with the partner who sent you this.
-      </p>
     </section>
   );
 }
