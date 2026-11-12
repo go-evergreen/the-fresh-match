@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 /** Compact AM/PM leave-behind — collapsed by default, tap to expand for screenshot. */
-export function LeaveBehindCard({ name, face, body, supp, path, summary }) {
+export function LeaveBehindCard({ name, partner, face, body, supp, path, summary }) {
   const [open, setOpen] = useState(false);
 
   const am = useMemo(() => uniqueById(face?.am || []).slice(0, 5), [face]);
@@ -34,7 +34,7 @@ export function LeaveBehindCard({ name, face, body, supp, path, summary }) {
           aria-expanded={open}
         >
           <div className="leave-card-top">
-            <div className="leave-brand">The Fresh Grove</div>
+            <div className="leave-brand">{partner ? `Ringana with ${partner}` : "The Fresh Grove"}</div>
             <h3 className="leave-title">{title}</h3>
             {summary && <p className="leave-summary">{summary}</p>}
             {!open && (

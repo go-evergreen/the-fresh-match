@@ -400,9 +400,12 @@ export default function App() {
   return (
     <div className="app">
       <div className="brand-top">
-        <span className="brand-mark">
-          The Fresh <span>Grove</span>
-        </span>
+        <img className="brand-stamp" src="./grove-stamp.png" alt="The Fresh Grove" />
+        {partnerFirst ? (
+          <span className="brand-mark">
+            Ringana <span>with {partnerFirst}</span>
+          </span>
+        ) : null}
       </div>
 
       <div className="shell">
@@ -412,11 +415,11 @@ export default function App() {
               <div className="intro-copy">
                 <div className="eyebrow">The Fresh Match</div>
                 <h1>
-                  What to <em>start</em> with
+                  Find your <em>freshest</em> routine
                 </h1>
                 <p className="intro-lead">
-                  Ringana makes a full line. This asks how you wash, what your skin is doing, and
-                  what you want more of — then hands you a short list to start with.
+                  A few questions about where you are now, what you&apos;re looking to improve, and
+                  what you want more of.
                 </p>
 
                 <div className="path-label">Where do you want to start?</div>
@@ -437,10 +440,19 @@ export default function App() {
             </div>
 
             <LegitSection />
-            <p className="copyright">© 2026 The Fresh Grove</p>
-            <p className="exclusive-note">
-              Someone shared this with you. Please keep it between you and them.
-            </p>
+            <footer className="intro-foot">
+              <p className="exclusive-note">
+                Someone shared this with you. Keep it between the two of you.
+              </p>
+              <p className="intro-disclaimer">
+                The Fresh Grove is a team of independent Ringana partners. This is not an official
+                Ringana site, and it is not medical advice. A match is a general suggestion from
+                your answers. Statements about supplements have not been evaluated by the Food and
+                Drug Administration. These products are not intended to diagnose, treat, cure, or
+                prevent any disease.
+              </p>
+              <p className="copyright">© 2026 The Fresh Grove</p>
+            </footer>
           </div>
         )}
 
@@ -539,9 +551,7 @@ export default function App() {
             </div>
 
             <div className="question-card">
-              <h2 className="question-text">
-                {partnerFirst ? `How can ${partnerFirst} reach you?` : "How can they reach you?"}
-              </h2>
+              <h2 className="question-text">Add your name to this match</h2>
               <p className="question-sub">Your name, and a social handle or an email.</p>
               <div className="reach-fields">
                 <label className="reach-field">
@@ -620,6 +630,7 @@ export default function App() {
 
             <LeaveBehindCard
               name={guestName}
+              partner={partnerFirst}
               face={face}
               body={body}
               supp={supp}
@@ -824,22 +835,23 @@ export default function App() {
 
             <div className="legal">
               <p>
-                <strong>The important stuff:</strong> This quiz is an educational tool from The Fresh
-                Grove, a team of independent Ringana partners. It is not an official Ringana website
-                or assessment. Product information is drawn from Ringana&apos;s published pages.
-                Matches are general suggestions from your answers — not personalized medical,
-                dermatological, or nutritional advice. Statements about supplements have not been
-                evaluated by the Food and Drug Administration. These products are not intended to
-                diagnose, treat, cure, or prevent any disease. If you are pregnant, nursing, taking
-                medication, or managing a health condition, talk with your healthcare provider before
-                starting a new supplement. Patch-test new skincare if your skin is sensitive or
-                reactive. Some products sold in Europe are not on the U.S. shop.
+                A match is a starting point from your answers, not a prescription. It is not
+                medical, dermatological, or nutritional advice. The Fresh Grove is a team of
+                independent Ringana partners, and this is not an official Ringana site. Product
+                details come from Ringana&apos;s published pages.
+              </p>
+              <p>
+                Statements about supplements have not been evaluated by the Food and Drug
+                Administration. These products are not intended to diagnose, treat, cure, or prevent
+                any disease. If you are pregnant, nursing, taking medication, or managing a health
+                condition, talk with your healthcare provider before starting a new supplement.
+                Patch-test new skincare if your skin is sensitive. Some products sold in Europe are
+                not on the U.S. shop.
+              </p>
+              <p className="exclusive-note">
+                Someone shared this with you. Keep it between the two of you.
               </p>
               <p className="copyright">© 2026 The Fresh Grove</p>
-              <p className="exclusive-note">
-                An exclusive resource for our circle — please enjoy it with the partner who shared
-                it, and kindly keep it within The Fresh Grove.
-              </p>
             </div>
           </div>
         )}

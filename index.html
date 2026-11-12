@@ -24,6 +24,38 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var looks = { grove: 1, brown: 1, white: 1, blue: 1, blush: 1 };
+        var corners = { sharp: 1, soft: 1 };
+        var look = (params.get("look") || "").trim().toLowerCase();
+        var face = (params.get("fonts") || "").trim().toLowerCase();
+        var corner = (params.get("corners") || "").trim().toLowerCase();
+        var root = document.documentElement;
+        if (looks[look]) root.setAttribute("data-look", look);
+        if (corners[corner]) root.setAttribute("data-corners", corner);
+        var type = {
+          fraunces: ['"Fraunces", Georgia, serif', '"Work Sans", "Helvetica Neue", sans-serif', ""],
+          libre: ['"Libre Baskerville", Georgia, serif', '"Source Sans 3", sans-serif', "https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap"],
+          manrope: ['"Manrope", sans-serif', '"Manrope", sans-serif', "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&display=swap"],
+          newsreader: ['"Newsreader", Georgia, serif', '"Nunito Sans", sans-serif', "https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Nunito+Sans:wght@300;400;600&display=swap"],
+          cormorant: ['"Cormorant Garamond", Georgia, serif', '"Work Sans", sans-serif', "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"],
+          nunito: ['"Nunito", sans-serif', '"Nunito", sans-serif', "https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;1,400&display=swap"]
+        };
+        var pick = type[face];
+        if (!pick) return;
+        root.setAttribute("data-fonts", face);
+        root.style.setProperty("--display", pick[0]);
+        root.style.setProperty("--body", pick[1]);
+        if (!pick[2] || document.querySelector('link[data-quiz-font="' + face + '"]')) return;
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = pick[2];
+        link.setAttribute("data-quiz-font", face);
+        document.head.appendChild(link);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
