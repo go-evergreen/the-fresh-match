@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FACE_Q, BODY_Q, SUPP_Q, INTENT_Q } from "./data/questions";
 import {
   buildFace,
@@ -69,6 +69,21 @@ function SectionLabel({ children }) {
       <span>{children}</span>
     </div>
   );
+}
+
+function fitBrandMark(el) {
+  if (!el) return;
+  const available = el.clientWidth;
+  if (available < 48) return;
+  let lo = 16;
+  let hi = 76;
+  for (let n = 0; n < 16; n += 1) {
+    const mid = (lo + hi) / 2;
+    el.style.fontSize = `${mid}px`;
+    if (el.scrollWidth <= available + 1) lo = mid;
+    else hi = mid;
+  }
+  el.style.fontSize = `${lo}px`;
 }
 
 export default function App() {
@@ -320,6 +335,19 @@ export default function App() {
   const partnerShop = useMemo(() => readPartnerShop(), []);
   const shelfInvite = useMemo(() => readShelfInvite(), []);
   const partnerFirst = useMemo(() => readPartnerFirst(), []);
+  const brandRef = useRef(null);
+
+  useEffect(() => {
+    const el = brandRef.current;
+    if (!el) return undefined;
+    const fit = () => fitBrandMark(el);
+    fit();
+    const fonts = document.fonts;
+    if (fonts?.ready) fonts.ready.then(fit);
+    const observer = new ResizeObserver(fit);
+    if (el.parentElement) observer.observe(el.parentElement);
+    return () => observer.disconnect();
+  }, [partnerFirst]);
   const shopSearch = typeof window !== "undefined" ? window.location.search : "";
   const linkItems = (items) => withPartnerLinks(items, partnerShop);
 
@@ -402,7 +430,7 @@ export default function App() {
       <div className="brand-top">
         <img className="brand-stamp" src="./grove-stamp.png" alt="The Fresh Grove" />
         {partnerFirst ? (
-          <span className="brand-mark">
+          <span ref={brandRef} className="brand-mark">
             Ringana <span>with&nbsp;{partnerFirst}</span>
           </span>
         ) : null}

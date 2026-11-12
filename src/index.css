@@ -101,13 +101,13 @@ button:focus-visible {
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  width: 100%;
-  max-width: 100%;
+  justify-content: flex-start;
+  gap: 0.7rem;
+  width: min(680px, 100%);
+  margin: 0 auto;
   box-sizing: border-box;
   text-align: left;
-  padding: 1.05rem 1.15rem 0.35rem;
+  padding: 1.05rem 1.25rem 0.35rem;
 }
 
 .brand-stamp {
@@ -144,14 +144,14 @@ button:focus-visible {
 }
 
 .brand-top .brand-mark {
-  display: inline-block;
-  flex: 0 0 auto;
-  max-width: none;
-  width: auto;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
   white-space: nowrap;
   font-family: var(--display);
-  font-size: clamp(1.2rem, 0.78rem + 1.7vw, 1.95rem);
-  letter-spacing: 0.05em;
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
   line-height: 1;
   text-transform: uppercase;
   color: var(--pine);
@@ -161,20 +161,6 @@ button:focus-visible {
   display: inline;
   white-space: nowrap;
   color: var(--brass);
-}
-
-@media (max-width: 520px) {
-  .brand-top {
-    gap: 0.3rem;
-    padding: 0.85rem 0.7rem 0.2rem;
-  }
-  .brand-stamp {
-    width: 60px;
-  }
-  .brand-top .brand-mark {
-    font-size: clamp(1.15rem, 4.8vw, 1.35rem);
-    letter-spacing: 0.035em;
-  }
 }
 
 .shell {
