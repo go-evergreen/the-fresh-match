@@ -21,6 +21,7 @@ import {
   readMatchFromLocation,
 } from "./lib/share";
 import { readPartnerFirst, readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
+import { readQuizPartnerSlug, sendQuizLead } from "./lib/quizLead";
 import "./index.css";
 
 const QUIZ_URL =
@@ -81,9 +82,11 @@ export default function App() {
   const [copiedLinks, setCopiedLinks] = useState(false);
   const [shared, setShared] = useState(false);
   const [guestName, setGuestName] = useState("");
+  const [reachName, setReachName] = useState("");
   const [reachSocial, setReachSocial] = useState("");
   const [reachEmail, setReachEmail] = useState("");
   const [reachError, setReachError] = useState("");
+  const [reachBusy, setReachBusy] = useState(false);
   const [restoredBanner, setRestoredBanner] = useState(false);
 
   const qs = useMemo(() => buildQs(path, ans), [path, ans]);
@@ -136,20 +139,46 @@ export default function App() {
 
   const reachEmailOk = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
 
-  const submitReach = () => {
+  const submitReach = async () => {
+    if (reachBusy) return;
+    const name = reachName.trim().replace(/\s+/g, " ");
     const social = reachSocial.trim().replace(/^@+/, "").trim();
     const email = reachEmail.trim();
-    if (social || reachEmailOk(email)) {
-      setReachError("");
-      setScreen("results");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (name.length < 2) {
+      setReachError("Add your name.");
       return;
     }
-    setReachError(
-      email
-        ? "That email doesn’t look right."
-        : "Add your social media handle or your email."
-    );
+    if (!(social || reachEmailOk(email))) {
+      setReachError(
+        email
+          ? "That email doesn’t look right."
+          : "Add your social media handle or your email."
+      );
+      return;
+    }
+    const matchUrl = buildRestoreUrl(QUIZ_URL, {
+      path,
+      ans,
+      name,
+      search: typeof window !== "undefined" ? window.location.search : "",
+    });
+    setReachError("");
+    setReachBusy(true);
+    try {
+      await sendQuizLead({
+        slug: readQuizPartnerSlug(),
+        name,
+        email: reachEmailOk(email) ? email : "",
+        social,
+        matchUrl,
+      });
+    } catch {
+      /* The match still opens. A missed save should not hide it. */
+    }
+    setGuestName(name);
+    setReachBusy(false);
+    setScreen("results");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const backFromReach = () => {
@@ -180,9 +209,11 @@ export default function App() {
     setShared(false);
     setRestoredBanner(false);
     setGuestName("");
+    setReachName("");
     setReachSocial("");
     setReachEmail("");
     setReachError("");
+    setReachBusy(false);
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
   };
 
@@ -240,9 +271,11 @@ export default function App() {
     setShared(false);
     setRestoredBanner(false);
     setGuestName("");
+    setReachName("");
     setReachSocial("");
     setReachEmail("");
     setReachError("");
+    setReachBusy(false);
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -509,8 +542,21 @@ export default function App() {
               <h2 className="question-text">
                 {partnerFirst ? `How can ${partnerFirst} reach you?` : "How can they reach you?"}
               </h2>
-              <p className="question-sub">A social handle or an email. One is enough.</p>
+              <p className="question-sub">Your name, and a social handle or an email.</p>
               <div className="reach-fields">
+                <label className="reach-field">
+                  <span>Name</span>
+                  <input
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your name"
+                    value={reachName}
+                    onChange={(event) => {
+                      setReachName(event.target.value);
+                      if (reachError) setReachError("");
+                    }}
+                  />
+                </label>
                 <label className="reach-field">
                   <span>Social media handle</span>
                   <input
@@ -550,8 +596,8 @@ export default function App() {
               <button type="button" className="btn-back" onClick={backFromReach}>
                 ← Back
               </button>
-              <button type="button" className="btn-next ready" onClick={submitReach}>
-                See my match
+              <button type="button" className="btn-next ready" onClick={submitReach} disabled={reachBusy}>
+                {reachBusy ? "Sending…" : "See my match"}
               </button>
             </div>
           </div>
