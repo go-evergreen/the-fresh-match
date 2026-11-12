@@ -27,6 +27,8 @@ export function buildFace(a) {
   const cityStress = a.climate === "city";
   const humid = a.climate === "humidity";
   const wantsMakeup = a.makeup === "yes" || a.makeup === "sometimes";
+  const lines = a.concern === "aging" || also.has("aging");
+  const matureSkin = a.mature === "yes" && lines && a.skinType !== "sensitive";
   const sensitiveAging = a.skinType === "sensitive" && a.concern === "aging";
   const hasConcern = (c) => a.concern === c || also.has(c);
 
@@ -135,6 +137,11 @@ export function buildFace(a) {
         "Your firmness goal — every other night to start; this formula is gentler than classic retinol"
       )
     );
+  } else if (a.concern === "aging" && matureSkin) {
+    am.push(
+      item(FACE.hydroSerum, "Hydrate", "Retinoid-type actives work better on well-hydrated skin — hydro serum first")
+    );
+    pm.push(item(FACE.overnightRetinal, "Treat", "Evening only. 0.18% retinal for mature skin. Start every second or third night, and wear sun protection the next day. Talk to your provider if you're pregnant, nursing, or plan to be."));
   } else if (a.concern === "aging") {
     am.push(
       item(FACE.hydroSerum, "Hydrate", "Retinoid-type actives work better on well-hydrated skin — hydro serum first")
@@ -200,7 +207,11 @@ export function buildFace(a) {
 
   // —— One secondary (also) treat max, evening only, and only on a fuller ritual ——
   if (full && also.size) {
-    if (also.has("aging") && a.concern !== "aging" && !sensitiveAging) {
+    if (matureSkin && a.concern !== "aging" && !pm.some((p) => p.id === "overnightRetinal")) {
+      pm.push(
+        item(FACE.overnightRetinal, "Treat · night", "You flagged mature skin — evenings only, every second or third night to start, with sun protection the next day. Talk to your provider if you're pregnant, nursing, or plan to be.")
+      );
+    } else if (also.has("aging") && a.concern !== "aging" && !sensitiveAging) {
       pm.push(
         item(FACE.antiWrinkle, "Treat · firmness", "You also flagged firmness — evening only, every other night to start")
       );
@@ -256,7 +267,9 @@ export function buildFace(a) {
         item(
           FACE.addsEffect,
           "Boost",
-          "Ringana pairs this with anti wrinkle serum — paracress for expression lines"
+          pm.some((p) => p.id === "overnightRetinal")
+            ? "Expression lines in the morning — paracress, alongside the night cream"
+            : "Ringana pairs this with anti wrinkle serum — paracress for expression lines"
         )
       );
     }
@@ -336,9 +349,13 @@ export function buildFace(a) {
     } else if (oilyishMask) {
       mask = FACE.purifyingMask;
       maskWhy = "Clay that drinks extra oil, with panthenol so you don't end up tight";
-    } else if (a.concern === "aging" || also.has("aging")) {
+    } else if (lines) {
       mask = FACE.peptideMask;
       maskWhy = "Peptides and paracress for a weekly firming pause — rinse off or leave on";
+    }
+    if (pm.some((p) => p.id === "overnightRetinal") && mask.id === "exfoliatingMask") {
+      mask = FACE.peptideMask;
+      maskWhy = "Peptide mask instead of the exfoliating mask — that one and retinal don't go on together";
     }
     weekly.push(item(mask, "1–2× weekly", maskWhy));
   }
@@ -685,6 +702,7 @@ export function summarizeAnswers(ans, path) {
     if (concern) bits.push(concern);
     if (cleanseLabel) bits.push(cleanseLabel);
     if ((ans.also || []).includes("barrier")) bits.push("barrier support");
+    if (ans.mature === "yes" && (ans.concern === "aging" || (ans.also || []).includes("aging"))) bits.push("mature skin");
     if (ans.makeup === "yes") bits.push("makeup days");
     if (ans.climate === "sunSeason") bits.push("outdoor / sun season");
     if (ans.depth === "minimal") bits.push("lean ritual");
@@ -772,12 +790,19 @@ export function buildHero(ans, path, face, body, supp) {
     });
 
     // Core treat
+    const matureSkin = ans.mature === "yes" && (ans.concern === "aging" || (ans.also || []).includes("aging")) && ans.skinType !== "sensitive";
     const sensitiveAging = ans.skinType === "sensitive" && ans.concern === "aging";
     if (ans.concern === "aging") {
       if (sensitiveAging) {
         bump(byId.hydroSerum || FACE.hydroSerum, 100, "Sensitive + firmness — barrier hydration leads");
         bump(byId.antiWrinkle || FACE.antiWrinkle, 92, "Your firmness goal — introduce every other night");
         bump(byId.skinPerfection || FACE.skinPerfection, 86, "Recovery support while you renew");
+      } else if (matureSkin) {
+        bump(byId.overnightRetinal || FACE.overnightRetinal, 100, "Your night step — retinal cream for mature skin, started slowly. Talk to your provider if you're pregnant, nursing, or plan to be.");
+        if (intent !== "curious" && ans.depth !== "minimal") {
+          bump(byId.addsEffect || FACE.addsEffect, 88, "Expression lines in the morning, alongside the night cream");
+        }
+        bump(byId.hydroSerum || FACE.hydroSerum, 72, "Hydration underneath makes retinoid-type actives play nicer");
       } else {
         bump(byId.antiWrinkle || FACE.antiWrinkle, 100, "Your #1 face goal — retinoid-grade renewal without the irritation trade-off");
         if (intent !== "curious" && ans.depth !== "minimal") {
@@ -851,9 +876,9 @@ export function buildHero(ans, path, face, body, supp) {
       if (p.id === "volumeShampoo" || p.id === "shampoo") score = 55;
       if (p.id === "handBalm") score = 50;
       if (p.id === "footBalm") score = 52;
-      /* Pages exist. They are not orderable yet, so they stay in the routine
+      /* Cooling leg spray is not orderable yet, so it stays in the routine
          and off the first-order shortlist. */
-      if (p.id === "deodorant" || p.id === "lightLegs" || p.id === "hairTreatment") score = Math.min(score, 36);
+      if (p.id === "lightLegs") score = Math.min(score, 36);
       bump(p, Math.round(score * bodyScale), p.why);
     });
   }
@@ -942,9 +967,12 @@ export function buildPlaybook(ans, path, hero, face, body, supp) {
   if (path === "skin" || path === "both") {
     week1.push(week1Cleanse(ans));
     week1.push("Serum → cream every morning and night — a little goes far.");
-    if (ans.concern === "aging") week1.push(ans.skinType === "sensitive"
+    const saidMature = ans.mature === "yes" && (ans.concern === "aging" || (ans.also || []).includes("aging"));
+    if (ans.concern === "aging" || saidMature) week1.push(ans.skinType === "sensitive"
       ? "Sensitive + firmness: hydro serum daily; anti wrinkle every other night until skin stays calm."
-      : "If you're new to retinoid-type actives, start the anti wrinkle serum every other night.");
+      : saidMature
+        ? "Overnight retinal cream, evenings only. Start every second or third night, and wear sun protection the next day."
+        : "If you're new to retinoid-type actives, start the anti wrinkle serum every other night.");
     else if (ans.concern === "breakouts") week1.push("Zone clarifying booster on active spots; give it 2–3 weeks before judging.");
     else week1.push("Give any new booster 2–3 weeks before you decide it's not for you.");
   }
@@ -993,7 +1021,13 @@ export function buildInsight(ans, path, heroItems = []) {
     }[ans.skinType];
 
     const concernLine = {
-      aging: "Firmness and fine lines put anti wrinkle serum at the center of your treat step.",
+      aging: ans.skinType === "sensitive"
+        ? ans.mature === "yes"
+          ? "Mature, reactive skin stays on the gentler anti wrinkle serum, every other night."
+          : "Firmness and fine lines put anti wrinkle serum at the center of your treat step."
+        : ans.mature === "yes"
+          ? "Mature skin puts overnight retinal cream on the night step. Start slowly, and wear sun protection the next day."
+          : "Firmness and fine lines put anti wrinkle serum at the center of your treat step.",
       dehydration: "Thirst is the brief — hydro serum's six hyaluronic depths, sealed with the right cream.",
       breakouts: "Breakouts called the shot — clear, hydrate underneath, and don't strip the barrier.",
       dullness: "Dullness put hydration and the glow booster on the shortlist.",
@@ -1004,6 +1038,14 @@ export function buildInsight(ans, path, heroItems = []) {
 
     if (skinLine) parts.push(skinLine);
     if (concernLine) parts.push(concernLine);
+    if (
+      ans.mature === "yes" &&
+      ans.concern !== "aging" &&
+      (ans.also || []).includes("aging") &&
+      ans.skinType !== "sensitive"
+    ) {
+      parts.push("You also flagged fine lines on mature skin, so overnight retinal cream is the evening step.");
+    }
     if (ans.depth === "minimal") parts.push("You asked for lean, so the Start here list stays honest — no filler.");
   }
 

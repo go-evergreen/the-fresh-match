@@ -120,6 +120,32 @@ export const FACE_Q = [
   },
 ];
 
+/** Asked only after fine lines is the main concern or an extra. */
+export const MATURE_Q = {
+  id: "mature",
+  single: true,
+  eyebrow: "Face",
+  section: "Face",
+  q: "Do you have mature skin?",
+  note: "This only comes up because you flagged fine lines. Mature skin is deeper lines and the longer firmness work. That's who the overnight retinal cream is for.",
+  options: [
+    { v: "yes", label: "Yes", sub: "Deeper lines and firmness. The night cream." },
+    { v: "no", label: "Not yet", sub: "Fine lines, but not mature skin. The gentler serum." },
+  ],
+};
+
+export function faceQuestions(answers = {}) {
+  const also = answers.also;
+  const lines = answers.concern === "aging" || (Array.isArray(also) && also.includes("aging"));
+  if (!lines) return FACE_Q;
+  const out = [];
+  for (const item of FACE_Q) {
+    out.push(item);
+    if (item.id === "also") out.push(MATURE_Q);
+  }
+  return out;
+}
+
 export const BODY_Q = [
   {
     id: "swaps",

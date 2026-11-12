@@ -40,6 +40,7 @@ const LINKED = new Set([
   "fresh-cream-medium",
   "fresh-cream-rich",
   "fresh-deodorant",
+  "fresh-deodorant-pocket",
   "fresh-eye-cream",
   "fresh-eye-serum",
   "fresh-foot-balm",
@@ -67,11 +68,9 @@ const LINKED = new Set([
 
 const BARE = new Set(["ringana.us", "www.ringana.us", "ringana.com", "www.ringana.com"]);
 
-/** Pages exist. They are not orderable yet. */
+/** Cooling leg spray has a page. It is not orderable yet. */
 const NOT_YET = new Set([
-  "fresh-deodorant",
   "fresh-cooling-leg-spray",
-  "fresh-conditioner-leave-in",
 ]);
 
 const SHELF_HOSTS = new Set(["shelf.taygoesfresh.com", "shelf.thefreshgrove.team"]);

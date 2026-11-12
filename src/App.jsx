@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FACE_Q, BODY_Q, SUPP_Q, INTENT_Q } from "./data/questions";
+import { faceQuestions, BODY_Q, SUPP_Q, INTENT_Q } from "./data/questions";
 import {
   buildFace,
   buildBody,
@@ -57,9 +57,9 @@ function wantsHairQuestion(answers) {
 function buildQs(path, answers = {}) {
   if (!path) return [];
   const bodyQs = BODY_Q.filter((q) => q.id !== "hairType" || wantsHairQuestion(answers));
-  if (path === "skin") return [...FACE_Q, ...bodyQs, INTENT_Q];
+  if (path === "skin") return [...faceQuestions(answers), ...bodyQs, INTENT_Q];
   if (path === "supp") return [...SUPP_Q, INTENT_Q];
-  if (path === "both") return [...FACE_Q, ...bodyQs, ...SUPP_Q, INTENT_Q];
+  if (path === "both") return [...faceQuestions(answers), ...bodyQs, ...SUPP_Q, INTENT_Q];
   return [];
 }
 

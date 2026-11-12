@@ -91,6 +91,17 @@ export const FACE = {
     desc: "An anti-ageing recovery treatment that deeply regenerates dry and stressed skin, visibly smooths fine lines and strengthens the barrier — for skin that's been pushed too hard and needs rebuilding rather than more active load.",
     use: "Works morning or evening, and you can reapply during the day to particularly dry or reactive patches. Two extras: exfoliate gently beforehand so it absorbs better, and it makes an excellent overnight lip mask applied thickly.",
   },
+  overnightRetinal: {
+    id: "overnightRetinal",
+    name: "FRESH overnight retinal cream",
+    kind: "Night cream · 0.18% retinal",
+    slug: "fresh-overnight-retinal-cream",
+    url: productUrl("fresh-overnight-retinal-cream"),
+    img: "./products/fresh/fresh-overnight-retinal-cream.png",
+    hero: "0.18% retinal · peptide · 4% niacinamide · coenzyme Q10 · hyaluronic acid",
+    desc: "The night cream for lines, firmness, and uneven tone. Retinal is the vitamin A that works on collagen and renewal. Niacinamide evens age and pigment spots. Almond oil and mango butter keep it soft enough for skin that also gets shiny.",
+    use: "Evenings only, on face, neck, and chest. Start every second or third night so skin can adjust, then build up. Wear sun protection the next day. Pause if skin flakes or feels irritated, then ease back in. Don't use it the same night as the exfoliating mask. It can transfer color onto fabric. Talk to your provider if you're pregnant, nursing, or plan to be.",
+  },
   enzymeMask: {
     id: "enzymeMask",
     name: "FRESH illuminating enzyme mask",
@@ -345,7 +356,7 @@ export const BODY = {
     img: "./products/fresh/fresh-deodorant.png",
     hero: "Frankincense · lemon verbena · zinc stearate · magnesium · elderberry · willow bark · baobab · prickly pear · sesame oil · rice husk water",
     desc: "A water-in-oil emulsion so it can carry plant oils and natural moisturisers alongside deodorising actives. Zinc and magnesium handle odour; lemon verbena supports your skin's own sweat-regulating function rather than blocking it. Entirely without aluminium salts.",
-    use: "One pump per underarm, rubbed in like a cream. If you're coming off an antiperspirant, give it two to three weeks — your body needs to recalibrate.",
+    use: "One pump per underarm, rubbed in like a cream. If you're coming off an antiperspirant, give it two to three weeks — your body needs to recalibrate. The 50 ml pocket is in the shop too, at $16.50.",
   },
   shampoo: {
     id: "shampoo",
