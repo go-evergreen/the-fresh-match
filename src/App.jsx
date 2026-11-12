@@ -81,6 +81,9 @@ export default function App() {
   const [copiedLinks, setCopiedLinks] = useState(false);
   const [shared, setShared] = useState(false);
   const [guestName, setGuestName] = useState("");
+  const [reachSocial, setReachSocial] = useState("");
+  const [reachEmail, setReachEmail] = useState("");
+  const [reachError, setReachError] = useState("");
   const [restoredBanner, setRestoredBanner] = useState(false);
 
   const qs = useMemo(() => buildQs(path, ans), [path, ans]);
@@ -125,9 +128,44 @@ export default function App() {
       }
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      setScreen("results");
+      setScreen("reach");
+      setReachError("");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  };
+
+  const reachEmailOk = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || "").trim());
+
+  const submitReach = () => {
+    const social = reachSocial.trim().replace(/^@+/, "").trim();
+    const email = reachEmail.trim();
+    if (social || reachEmailOk(email)) {
+      setReachError("");
+      setScreen("results");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setReachError(
+      email
+        ? "That email doesn’t look right."
+        : "Add your social media handle or your email."
+    );
+  };
+
+  const backFromReach = () => {
+    const last = Math.max(0, qs.length - 1);
+    const prev = qs[last];
+    setI(last);
+    if (prev?.single) {
+      setPicked(ans[prev.id] ?? null);
+      setDraft([]);
+    } else {
+      setDraft(Array.isArray(ans[prev.id]) ? ans[prev.id] : []);
+      setPicked(null);
+    }
+    setReachError("");
+    setScreen("quiz");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const start = (p) => {
@@ -142,6 +180,9 @@ export default function App() {
     setShared(false);
     setRestoredBanner(false);
     setGuestName("");
+    setReachSocial("");
+    setReachEmail("");
+    setReachError("");
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
   };
 
@@ -199,6 +240,9 @@ export default function App() {
     setShared(false);
     setRestoredBanner(false);
     setGuestName("");
+    setReachSocial("");
+    setReachEmail("");
+    setReachError("");
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -426,7 +470,7 @@ export default function App() {
                   onClick={confirmSingle}
                   disabled={!picked}
                 >
-                  {i + 1 === qs.length ? "See my match" : "Continue"}
+                  Continue
                 </button>
               ) : (
                 <button
@@ -435,17 +479,81 @@ export default function App() {
                   onClick={submitMulti}
                   disabled={multiBlocked}
                 >
-                  {i + 1 === qs.length
-                    ? "See my match"
-                    : draft.length
-                      ? "Continue"
-                      : goalsNeedPick
-                        ? "Pick at least one"
-                        : "Skip — continue"}
+                  {draft.length
+                    ? "Continue"
+                    : goalsNeedPick
+                      ? "Pick at least one"
+                      : "Skip — continue"}
                 </button>
               )}
             </div>
             {q.single && <p className="quiz-hint">Select an answer, then continue</p>}
+          </div>
+        )}
+
+        {screen === "reach" && (
+          <div className="quiz">
+            <div className="progress-wrap">
+              <div className="progress-top">
+                <span className="progress-label">Before your match</span>
+                <span className="progress-count">
+                  {qs.length + 1} of {qs.length + 1}
+                </span>
+              </div>
+              <div className="progress-bar" aria-hidden>
+                <div className="progress-fill" style={{ width: "100%" }} />
+              </div>
+            </div>
+
+            <div className="question-card">
+              <h2 className="question-text">
+                {partnerFirst ? `How can ${partnerFirst} reach you?` : "How can they reach you?"}
+              </h2>
+              <p className="question-sub">A social handle or an email. One is enough.</p>
+              <div className="reach-fields">
+                <label className="reach-field">
+                  <span>Social media handle</span>
+                  <input
+                    type="text"
+                    inputMode="text"
+                    autoComplete="username"
+                    placeholder="@yourhandle"
+                    value={reachSocial}
+                    onChange={(event) => {
+                      setReachSocial(event.target.value);
+                      if (reachError) setReachError("");
+                    }}
+                  />
+                </label>
+                <label className="reach-field">
+                  <span>Email</span>
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@email.com"
+                    value={reachEmail}
+                    onChange={(event) => {
+                      setReachEmail(event.target.value);
+                      if (reachError) setReachError("");
+                    }}
+                  />
+                </label>
+              </div>
+              {reachError ? (
+                <p className="reach-error" role="alert">
+                  {reachError}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="nav-row">
+              <button type="button" className="btn-back" onClick={backFromReach}>
+                ← Back
+              </button>
+              <button type="button" className="btn-next ready" onClick={submitReach}>
+                See my match
+              </button>
+            </div>
           </div>
         )}
 
