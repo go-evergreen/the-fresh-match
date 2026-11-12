@@ -112,9 +112,10 @@ function usPath(slug) {
 
 export function readPartnerShop(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
   const params = new URLSearchParams(loc.search || "");
-  const host = partnerHost(params.get("shop") || "");
+  let host = partnerHost(params.get("shop") || "");
   const code = partnerCode(params.get("code") || "");
   const weblink = affiliateCode(params.get("ref") || "");
+  if (!host && /^[0-9]{4,12}$/.test(weblink)) host = weblink + ".ringana.us";
   return {
     origin: host ? "https://" + host : "",
     host,
