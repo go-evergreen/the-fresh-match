@@ -1,27 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { faceQuestions, BODY_Q, SUPP_Q, INTENT_Q } from "./data/questions";
-import {
-  buildFace,
-  buildBody,
-  buildSupp,
-  buildHero,
-  buildPlaybook,
-  summarizeAnswers,
-  buildInsight,
-  countUniqueProducts,
-} from "./engine/match";
-import { ProductList } from "./components/ProductRow";
+import { buildFace, buildBody, buildSupp, summarizeAnswers } from "./engine/match";
+import { ShopLane, RoutineFold } from "./components/ShopLanes";
+import { buildLanes, bodyLaneLabel } from "./engine/lanes";
 import { LeaveBehindCard } from "./components/LeaveBehindCard";
 import { LegitSection } from "./components/LegitSection";
 import { ShelfPrompt } from "./components/ShelfPrompt";
-import {
-  formatTextBrief,
-  formatLinksBrief,
-  buildRestoreUrl,
-  readMatchFromLocation,
-} from "./lib/share";
-import { readPartnerFirst, readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
-import { readQuizPartnerSlug, sendQuizLead } from "./lib/quizLead";
+import { buildRestoreUrl, encodeMatchState, readMatchFromLocation } from "./lib/share";
+import { partnerBackupQuery, readPartnerFirst, readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
+import { readPartnerInstagram, readQuizPartnerSlug, sendQuizLead } from "./lib/quizLead";
 import "./index.css";
 
 const QUIZ_URL =
@@ -63,14 +50,6 @@ function buildQs(path, answers = {}) {
   return [];
 }
 
-function SectionLabel({ children }) {
-  return (
-    <div className="section-label">
-      <span>{children}</span>
-    </div>
-  );
-}
-
 function fitBrandMark(el) {
   if (!el) return;
   const available = el.clientWidth;
@@ -93,10 +72,8 @@ export default function App() {
   const [ans, setAns] = useState({});
   const [draft, setDraft] = useState([]);
   const [picked, setPicked] = useState(null);
-  const [copied, setCopied] = useState(false);
-  const [copiedLinks, setCopiedLinks] = useState(false);
-  const [shared, setShared] = useState(false);
   const [guestName, setGuestName] = useState("");
+  const [partnerIg, setPartnerIg] = useState("");
   const [reachName, setReachName] = useState("");
   const [reachSocial, setReachSocial] = useState("");
   const [reachEmail, setReachEmail] = useState("");
@@ -117,19 +94,43 @@ export default function App() {
     setAns(saved.ans || {});
     setGuestName(saved.name || "");
     setScreen("results");
-    setRestoredBanner(true);
+    let own = false;
+    try {
+      const hash = window.location.hash || "";
+      const token = (hash.match(/[#&]m=([^&]+)/) || [])[1] || "";
+      own = token && sessionStorage.getItem("fm-own-results") === decodeURIComponent(token);
+    } catch {
+      own = false;
+    }
+    setRestoredBanner(!own);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   // Keep the URL hash in sync so "copy link" / refresh works
   useEffect(() => {
     if (screen !== "results" || !path) return;
-    const url = buildRestoreUrl(QUIZ_URL, { path, ans, name: guestName });
+    const url = buildRestoreUrl(QUIZ_URL, {
+      path,
+      ans,
+      name: guestName,
+      search: window.location.search,
+      backup: partnerBackupQuery(),
+    });
     const hash = url.includes("#") ? url.slice(url.indexOf("#")) : "";
     if (hash && window.location.hash !== hash) {
       window.history.replaceState(null, "", window.location.pathname + window.location.search + hash);
     }
-  }, [screen, path, ans, guestName]);
+    if (!restoredBanner) {
+      const token = (hash.match(/[#&]m=([^&]+)/) || [])[1] || "";
+      if (token) {
+        try {
+          sessionStorage.setItem("fm-own-results", decodeURIComponent(token));
+        } catch {
+          /* private mode */
+        }
+      }
+    }
+  }, [screen, path, ans, guestName, restoredBanner]);
 
   const advance = (nextAns) => {
     const nextQs = buildQs(path, nextAns);
@@ -176,6 +177,7 @@ export default function App() {
       ans,
       name,
       search: typeof window !== "undefined" ? window.location.search : "",
+      backup: partnerBackupQuery(),
     });
     setReachError("");
     setReachBusy(true);
@@ -219,9 +221,6 @@ export default function App() {
     setAns({});
     setDraft([]);
     setPicked(null);
-    setCopied(false);
-    setCopiedLinks(false);
-    setShared(false);
     setRestoredBanner(false);
     setGuestName("");
     setReachName("");
@@ -281,9 +280,6 @@ export default function App() {
     setAns({});
     setDraft([]);
     setPicked(null);
-    setCopied(false);
-    setCopiedLinks(false);
-    setShared(false);
     setRestoredBanner(false);
     setGuestName("");
     setReachName("");
@@ -307,34 +303,27 @@ export default function App() {
     () => (screen === "results" && (path === "supp" || path === "both") ? buildSupp(ans) : null),
     [screen, path, ans]
   );
-  const hero = useMemo(
-    () => (screen === "results" ? buildHero(ans, path, face, body, supp) : null),
-    [screen, ans, path, face, body, supp]
-  );
-  const playbook = useMemo(
-    () => (screen === "results" ? buildPlaybook(ans, path, hero, face, body, supp) : null),
-    [screen, ans, path, hero, face, body, supp]
-  );
-
   const today = new Date().toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
   const summary = summarizeAnswers(ans, path);
-  const insight = useMemo(
-    () => (screen === "results" ? buildInsight(ans, path, hero?.items) : ""),
-    [screen, ans, path, hero]
-  );
-  const productCount = useMemo(() => {
-    if (screen !== "results") return 0;
-    const n = countUniqueProducts(face, body, supp);
-    return typeof n === "number" ? n : 0;
-  }, [screen, face, body, supp]);
 
   const partnerShop = useMemo(() => readPartnerShop(), []);
   const shelfInvite = useMemo(() => readShelfInvite(), []);
   const partnerFirst = useMemo(() => readPartnerFirst(), []);
+  const partnerSlug = useMemo(() => readQuizPartnerSlug(), []);
+
+  useEffect(() => {
+    let live = true;
+    readPartnerInstagram(partnerSlug).then((handle) => {
+      if (live) setPartnerIg(handle);
+    });
+    return () => {
+      live = false;
+    };
+  }, [partnerSlug]);
   const brandRef = useRef(null);
 
   useEffect(() => {
@@ -348,79 +337,23 @@ export default function App() {
     if (el.parentElement) observer.observe(el.parentElement);
     return () => observer.disconnect();
   }, [partnerFirst]);
-  const shopSearch = typeof window !== "undefined" ? window.location.search : "";
-  const linkItems = (items) => withPartnerLinks(items, partnerShop);
-
-  const restoreUrl = useMemo(
-    () =>
-      path
-        ? buildRestoreUrl(QUIZ_URL, { path, ans, name: guestName, search: shopSearch })
-        : `${QUIZ_URL.replace(/[?#].*$/, "")}${shopSearch}`,
-    [path, ans, guestName, shopSearch]
-  );
-
-  const briefPayload = () => ({
-    summary,
-    hero: hero ? { ...hero, items: linkItems(hero.items) } : hero,
-    playbook: playbook ? { ...playbook, addNext: linkItems(playbook.addNext) } : playbook,
-    restoreUrl,
-    name: guestName,
-    code: partnerShop.code,
-    shopHost: partnerShop.host,
-  });
-
-  const copyText = async () => {
-    const text = formatTextBrief(briefPayload());
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
-    } catch {
-      window.prompt("Copy your match summary:", text);
-    }
-  };
-
-  const copyWithLinks = async () => {
-    const text = formatLinksBrief(briefPayload());
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedLinks(true);
-      setTimeout(() => setCopiedLinks(false), 2200);
-    } catch {
-      window.prompt("Copy match with links:", text);
-    }
-  };
-
-  const copyRestoreLink = async () => {
-    try {
-      await navigator.clipboard.writeText(restoreUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
-    } catch {
-      window.prompt("Copy match link:", restoreUrl);
-    }
-  };
-
-  const shareMatch = async () => {
-    const text = formatTextBrief(briefPayload());
-    if (typeof navigator.share === "function") {
-      try {
-        await navigator.share({
-          title: guestName?.trim()
-            ? `${guestName.trim()}'s Fresh Match`
-            : "My Fresh Match — The Fresh Grove",
-          text,
-          url: restoreUrl,
-        });
-        setShared(true);
-        setTimeout(() => setShared(false), 2200);
-        return;
-      } catch (err) {
-        if (err?.name === "AbortError") return;
-      }
-    }
-    await copyText();
-  };
+  const lanes = useMemo(() => {
+    if (screen !== "results") return { skincare: [], body: [], bodyMore: [], supplements: [] };
+    const built = buildLanes(face, body, supp);
+    return {
+      skincare: withPartnerLinks(built.skincare, partnerShop),
+      body: withPartnerLinks(built.body, partnerShop),
+      bodyMore: withPartnerLinks(built.bodyMore, partnerShop),
+      supplements: withPartnerLinks(built.supplements, partnerShop),
+    };
+  }, [screen, face, body, supp, partnerShop]);
+  const shelfContinue = useMemo(() => {
+    if (!shelfInvite) return "";
+    const base = shelfInvite.replace(/#.*$/, "");
+    if (!path) return base;
+    const token = encodeMatchState({ path, ans, name: guestName });
+    return `${base}#m=${token}`;
+  }, [shelfInvite, path, ans, guestName]);
 
   const goalsNeedPick = q?.id === "goals" && ans.approach === "targeted";
   const multiBlocked = goalsNeedPick && draft.length === 0;
@@ -646,8 +579,7 @@ export default function App() {
           <div className="results">
             {restoredBanner && (
               <div className="restore-banner">
-                Restored a shared match. Scroll to the bottom when you want to name it or send it
-                back.
+                {guestName.trim() ? `This is ${guestName.trim()}'s match.` : "This is your match."}
               </div>
             )}
 
@@ -681,109 +613,11 @@ export default function App() {
               </aside>
             ) : null}
 
-            {hero?.items?.length > 0 && (
-              <>
-                <SectionLabel>{hero.title}</SectionLabel>
-                <p className="section-blurb">{hero.subtitle}</p>
-                <ProductList items={linkItems(hero.items)} openFirst />
-              </>
-            )}
+            <ShopLane label="Skincare" items={lanes.skincare} />
+            <ShopLane label={bodyLaneLabel(lanes.body)} items={lanes.body} more={lanes.bodyMore} />
+            <ShopLane label="Supplements" items={lanes.supplements} />
 
-            {insight && (
-              <div className="insight-card">
-                <div className="insight-label">Why this match</div>
-                <p>{insight}</p>
-              </div>
-            )}
-
-            {playbook && (
-              <div className="playbook-card">
-                <div className="insight-label">How to start</div>
-                <div className="playbook-grid">
-                  <div>
-                    <h4>Buy first</h4>
-                    <ul>
-                      {playbook.buyFirst.map((p) => (
-                        <li key={p.id}>{p.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  {playbook.addNext.length > 0 && (
-                    <div>
-                      <h4>Add next</h4>
-                      <ul>
-                        {playbook.addNext.map((p) => (
-                          <li key={p.id}>{p.name}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-                <div className="playbook-week">
-                  <h4>Week 1</h4>
-                  <ul>
-                    {playbook.week1.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
-                </div>
-                <p className="playbook-note">
-                  Send this to the person who shared it with you. They can help you decide what to
-                  start with.
-                </p>
-              </div>
-            )}
-
-            <div className="full-match-head">
-              <SectionLabel>Full match</SectionLabel>
-              <p className="section-blurb">
-                Everything that fit your answers — tap to expand. Start here above is still your
-                first order.
-              </p>
-            </div>
-
-            {face && (
-              <>
-                <SectionLabel>Morning</SectionLabel>
-                <ProductList items={linkItems(face.am)} />
-                <SectionLabel>Evening</SectionLabel>
-                <ProductList items={linkItems(face.pm)} />
-                {face.weekly.length > 0 && (
-                  <>
-                    <SectionLabel>Weekly</SectionLabel>
-                    <ProductList items={linkItems(face.weekly)} />
-                  </>
-                )}
-              </>
-            )}
-
-            {body && body.length > 0 && (
-              <>
-                <SectionLabel>Your everyday swaps</SectionLabel>
-                <ProductList items={linkItems(body)} />
-              </>
-            )}
-
-            {supp && (
-              <>
-                {supp.daily.length > 0 && (
-                  <>
-                    <SectionLabel>
-                      {supp.approach === "targeted" ? "Suggested foundation" : "Overall foundation"}
-                    </SectionLabel>
-                    <ProductList items={linkItems(supp.daily)} />
-                  </>
-                )}
-                {supp.targeted.length > 0 && (
-                  <>
-                    <SectionLabel>
-                      {supp.approach === "overall" ? "Focused add-ons" : "Targeted for your goals"}
-                    </SectionLabel>
-                    <ProductList items={linkItems(supp.targeted)} />
-                  </>
-                )}
-              </>
-            )}
+            <RoutineFold face={face} />
 
             <div className="edu-block">
               <div className="k">Remember why this line hits different</div>
@@ -797,8 +631,10 @@ export default function App() {
                   "Their formulas, their campus, airless packaging — so you get potency without the preservative load.",
                 ],
                 [
-                  "Talk it through with your partner",
-                  "Your shortlist is a starting point. Send it to the person who shared this quiz. They can help you decide what to begin with.",
+                  "Your match is already with them",
+                  partnerFirst
+                    ? `${partnerFirst} can see this match and help you decide what to begin with.`
+                    : "The person who sent you this quiz can see this match and help you decide what to begin with.",
                 ],
               ].map(([t, d]) => (
                 <div className="edu-item" key={t}>
@@ -809,11 +645,12 @@ export default function App() {
             </div>
 
             <div className="cta-block share-footer">
-              <div className="cta-eyebrow">Save &amp; send</div>
-              <h3>Send this back</h3>
+              <div className="cta-eyebrow">Save</div>
+              <h3>Keep this on your shelf</h3>
               <p>
-                Name it if you want, then share the brief. The person who sent you the quiz can
-                open the same results and help you decide what to order first.
+                {partnerFirst
+                  ? `Continue on your shelf so ${partnerFirst} can see your match. Suggestions land on your wishlist, not your cabinet.`
+                  : "Continue on your shelf. Suggestions land on your wishlist, not your cabinet."}
               </p>
 
               <label className="name-field name-field-on-pine">
@@ -828,31 +665,42 @@ export default function App() {
               </label>
 
               <div className="result-stats">
-                <div className="stat">
-                  <strong>{hero?.items?.length || 0}</strong>
-                  <span>start here</span>
-                </div>
-                <div className="stat">
-                  <strong>{productCount}</strong>
-                  <span>full match</span>
-                </div>
+                {lanes.skincare.length > 0 && (
+                  <div className="stat">
+                    <strong>{lanes.skincare.length}</strong>
+                    <span>skincare</span>
+                  </div>
+                )}
+                {lanes.body.length > 0 && (
+                  <div className="stat">
+                    <strong>{lanes.body.length}</strong>
+                    <span>{bodyLaneLabel(lanes.body) === "Body & hair" ? "body & hair" : "body"}</span>
+                  </div>
+                )}
+                {lanes.supplements.length > 0 && (
+                  <div className="stat">
+                    <strong>{lanes.supplements.length}</strong>
+                    <span>supplements</span>
+                  </div>
+                )}
               </div>
 
               <div className="cta-actions">
-                <button type="button" className="btn-brass" onClick={shareMatch}>
-                  {shared ? "Shared!" : "Share with partner"}
-                </button>
-                <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={copyText}>
-                  {copied ? "Copied!" : "Copy for text"}
-                </button>
-                <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={copyRestoreLink}>
-                  Copy match link
-                </button>
-              </div>
-              <div className="cta-actions cta-actions-secondary">
-                <button type="button" className="btn-ghost btn-ghost-on-pine" onClick={copyWithLinks}>
-                  {copiedLinks ? "Copied!" : "Copy with shop links"}
-                </button>
+                {shelfContinue ? (
+                  <a className="btn-brass" href={shelfContinue}>
+                    Continue on your shelf
+                  </a>
+                ) : null}
+                {partnerIg ? (
+                  <a
+                    className="btn-ghost btn-ghost-on-pine"
+                    href={`https://ig.me/m/${partnerIg}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {partnerFirst ? `Message ${partnerFirst} on Instagram` : "Message on Instagram"}
+                  </a>
+                ) : null}
               </div>
 
               <div className="cta-actions cta-actions-footer">

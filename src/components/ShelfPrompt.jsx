@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-const WAIT_MS = 60000;
+const WAIT_MS = 12000;
 
-/** After a minute on results, offer that partner's Fresh Shelf. */
+/** After a short pause on results, offer that partner's Fresh Shelf. */
 export function ShelfPrompt({ active, href, name }) {
   const [open, setOpen] = useState(false);
 
@@ -39,11 +39,11 @@ export function ShelfPrompt({ active, href, name }) {
   if (!open || !href) return null;
 
   const who = String(name || "").trim();
-  const title = "Want to keep your results and learn more about the products?";
-  const appLine = who ? `Download ${who}’s Fresh Shelf app.` : "Download the Fresh Shelf app.";
-  const message = who ? `message ${who} directly` : "message them directly";
-  const body = `${appLine} Add products to your shelf, ${message}, build your wishlist, get notified about sales, and more.`;
-  const action = "Open Your Fresh Shelf";
+  const title = "Want to keep looking?";
+  const body = who
+    ? `Fresh Shelf is the app. Your match can live there. You can learn the products, save what you'd love, message ${who}, and hear about sales.`
+    : "Fresh Shelf is the app. Your match can live there. You can learn the products, save what you'd love, and hear about sales.";
+  const action = "Open Fresh Shelf";
 
   const dismiss = () => {
     setOpen(false);
@@ -58,6 +58,7 @@ export function ShelfPrompt({ active, href, name }) {
     <div className="shelf-prompt" role="dialog" aria-modal="true" aria-labelledby="shelf-prompt-title">
       <button type="button" className="shelf-prompt-backdrop" aria-label="Dismiss" onClick={dismiss} />
       <div className="shelf-prompt-card">
+        <img className="shelf-prompt-icon" src="./fresh-shelf.png" alt="" />
         <h3 id="shelf-prompt-title">{title}</h3>
         <p>{body}</p>
         <div className="shelf-prompt-actions">

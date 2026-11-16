@@ -98,12 +98,14 @@ export function decodeMatchState(encoded) {
   }
 }
 
-export function buildRestoreUrl(baseUrl, { path, ans, name, search }) {
+export function buildRestoreUrl(baseUrl, { path, ans, name, search, backup }) {
   const token = encodeMatchState({ path, ans, name });
   const clean = baseUrl.replace(/#.*$/, "").replace(/\?.*$/, "");
   const q = String(search || "");
   const query = q ? (q.charAt(0) === "?" ? q : `?${q}`) : "";
-  return `${clean}${query}#m=${token}`;
+  const keep = String(backup || "").replace(/^#/, "").replace(/(^|&)m=[^&]*/g, "").replace(/^&|&$/g, "");
+  const hash = keep ? `${keep}&m=${token}` : `m=${token}`;
+  return `${clean}${query}#${hash}`;
 }
 
 export function readMatchFromLocation(loc = window.location) {

@@ -167,8 +167,8 @@ export const BODY_Q = [
       { v: "deo", label: "Deodorant", sub: "Ready to ditch aluminium salts" },
       { v: "shampoo", label: "Shampoo", sub: "Gentle, scalp-smart cleanse" },
       { v: "conditioner", label: "Conditioner", sub: "Detangle, shine, seal it in" },
-      { v: "oral", label: "Oral care", sub: "Oil pulling for teeth & gums" },
-      { v: "wipes", label: "Wet wipes swap", sub: "Plastic-free fresh-up foam" },
+      { v: "oral", label: "Tooth + gum support", sub: "Oil pulling for teeth and gums" },
+      { v: "wipes", label: "Bum & intimate care", sub: "Foam instead of a wet wipe" },
     ],
   },
   {

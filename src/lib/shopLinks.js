@@ -113,15 +113,10 @@ function usPath(slug) {
 const PARTNER_KEYS = ["shop", "code", "ref", "with", "who", "look", "fonts", "corners"];
 
 /** Shop, code, and shelf slug from the query, or from the hash if a chat dropped the query. */
-export function partnerBackupQuery(loc = typeof window !== "undefined" ? window.location : { search: "", hash: "" }) {
-  const search = new URLSearchParams((loc && loc.search) || "");
-  const hash = new URLSearchParams(String((loc && loc.hash) || "").replace(/^#/, ""));
-  const parts = [];
-  PARTNER_KEYS.forEach((key) => {
-    const value = search.get(key) || hash.get(key) || "";
-    if (value) parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-  });
-  return parts.join("&");
+function doorValue(key) {
+  const door = typeof window !== "undefined" ? window.__quizDoor : null;
+  if (!door || !door[key]) return "";
+  return String(door[key]);
 }
 
 export function partnerParam(loc, key) {
@@ -129,8 +124,33 @@ export function partnerParam(loc, key) {
   const fromSearch = search.get(key);
   if (fromSearch) return fromSearch;
   const hash = String((loc && loc.hash) || "").replace(/^#/, "");
-  if (!hash) return "";
-  return new URLSearchParams(hash).get(key) || "";
+  if (hash && hash.indexOf("=") >= 0) {
+    const fromHash = new URLSearchParams(hash).get(key);
+    if (fromHash) return fromHash;
+  }
+  return doorValue(key);
+}
+
+export function partnerBackupQuery(loc = typeof window !== "undefined" ? window.location : { search: "", hash: "" }) {
+  const parts = [];
+  PARTNER_KEYS.forEach((key) => {
+    const value = partnerParam(loc, key) || "";
+    if (value) parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+  });
+  return parts.join("&");
+}
+
+/** quiz.thefreshgrove.team/kassidy — the same door as the lead page, without the long query. */
+export function readPathSlug(loc = typeof window !== "undefined" ? window.location : { pathname: "" }) {
+  const parts = String((loc && loc.pathname) || "").split("/").filter(Boolean);
+  let slug = "";
+  if (parts.length === 1) slug = parts[0];
+  else if (parts.length === 2 && parts[0].toLowerCase() === "with") slug = parts[1];
+  slug = slug.toLowerCase();
+  if (!slug || slug.indexOf(".") >= 0) return "";
+  if (slug === "assets" || slug === "products" || slug === "with" || slug === "join") return "";
+  if (!/^[a-z0-9][a-z0-9-]{1,39}$/.test(slug)) return "";
+  return slug;
 }
 
 export function readPartnerShop(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
@@ -192,7 +212,7 @@ function firstFromSlug(slug) {
 
 /** Only a real Fresh Shelf door. A bare with= slug is enough. */
 export function readShelfInvite(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const direct = shelfHrefFor(partnerParam(loc, "with") || "");
+  const direct = shelfHrefFor(partnerParam(loc, "with") || readPathSlug(loc) || "");
   if (direct) return direct;
   const raw = partnerParam(loc, "shelf") || "";
   if (!raw) return "";
@@ -213,7 +233,7 @@ export function readShelfInvite(loc = typeof window !== "undefined" ? window.loc
 export function readPartnerFirst(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
   const given = String(partnerParam(loc, "who") || "").trim().replace(/\s+/g, " ").split(" ")[0] || "";
   if (/^[A-Za-z][A-Za-z.'-]{0,30}$/.test(given)) return given;
-  const fromWith = firstFromSlug(partnerParam(loc, "with") || "");
+  const fromWith = firstFromSlug(partnerParam(loc, "with") || readPathSlug(loc) || "");
   if (fromWith) return fromWith;
   try {
     const shelf = new URL(partnerParam(loc, "shelf") || "");

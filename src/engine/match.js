@@ -119,12 +119,12 @@ export function buildFace(a) {
     const t = oilyish || humid ? FACE.tonicPure : FACE.tonicCalm;
     const tWhy =
       oilyish || humid
-        ? "Pure is the clarifying one — mulberry extract regulates oil and discourages blackheads"
+        ? "This is the clarifying toner. Mulberry in it helps with oil and blackheads."
         : a.skinType === "sensitive"
-          ? "Calm is Ringana's tonic for skin prone to redness and irritation — harmonising, not astringent"
-          : "Calm is the one for dry and normal skin; pure would be over-clarifying for you";
+          ? "This is the gentle toner. Better if skin reddens or stings."
+          : "This is the gentle toner.";
     am.push(item(t, "Tone", tWhy));
-    pm.push(item(t, "Tone", "Same step, evening — toned skin absorbs what comes next"));
+    pm.push(item(t, "Tone", "Same toner at night, before serum."));
   }
 
   // —— Primary treat: one needle-mover path (not every serum at once) ——
@@ -172,7 +172,7 @@ export function buildFace(a) {
     );
     const glowWhy =
       a.concern === "scarring"
-        ? "Glow booster is the one for marks left behind. On a leftover mark, it can go on that spot undiluted. Not around the eyes. Shake first."
+        ? "For marks left behind. Shake it, then one pump into the serum. Not around the eyes."
         : a.concern === "brightening"
           ? "Glow booster for dark spots and uneven color. Vitamin C, niacinamide, EGCG, and licorice. One pump into your serum. Shake first."
           : cityStress
@@ -213,10 +213,10 @@ export function buildFace(a) {
       );
     } else if (also.has("aging") && a.concern !== "aging" && !sensitiveAging) {
       pm.push(
-        item(FACE.antiWrinkle, "Treat · firmness", "You also flagged firmness — evening only, every other night to start")
+        item(FACE.antiWrinkle, "Treat · firmness", "You mentioned firmness. Evening only, every other night to start.")
       );
     } else if (also.has("breakouts") && a.concern !== "breakouts" && !hasConcern("aging")) {
-      pm.push(item(FACE.addsRepair, "Spot treat", "Secondary congestion — zone it; don't run a second full face serum"));
+      pm.push(item(FACE.addsRepair, "Spot treat", "You mentioned breakouts. Use this on the spot, not as a second serum all over."));
     } else if (
       (also.has("dullness") || also.has("brightening") || also.has("scarring")) &&
       a.concern !== "dullness" &&
@@ -225,10 +225,10 @@ export function buildFace(a) {
       a.concern !== "breakouts"
     ) {
       const why = also.has("scarring")
-        ? "Marks you also flagged. Glow booster in the morning. Undiluted only on a leftover mark, never around the eyes."
+        ? "You mentioned leftover marks. Morning only, one pump into the serum. Not around the eyes."
         : also.has("brightening")
-          ? "Dark spots you also flagged. Glow booster in the morning, one pump into your serum."
-          : "Dullness you also flagged. Glow booster in the morning, on top of hydration.";
+          ? "You mentioned dark spots. Morning, one pump into the serum."
+          : "You mentioned skin looks flat. Morning, one pump into the serum.";
       am.push(item(FACE.addsGlow, "Boost", why));
     }
   }
@@ -244,17 +244,17 @@ export function buildFace(a) {
     (also.has("scarring") || also.has("brightening") || (full && also.has("dullness")))
   ) {
     const why = also.has("scarring")
-      ? "Marks you also flagged. Glow booster in the morning. Undiluted only on a leftover mark, never around the eyes. Shake first."
+      ? "You mentioned leftover marks. Morning only, one pump into the serum. Not around the eyes. Shake it."
       : also.has("brightening")
-        ? "Dark spots you also flagged. Glow booster in the morning, one pump into your serum. Shake first."
-        : "Dullness you also flagged. Glow booster in the morning, on top of hydration.";
+        ? "You mentioned dark spots. Morning, one pump into the serum. Shake it."
+        : "You mentioned skin looks flat. Morning, one pump into the serum. Shake it.";
     am.push(item(FACE.addsGlow, "Boost", why));
   }
 
   // Eyes as add-on (not already primary) — secondary concern only, not every extra checkbox
   if (a.concern !== "eyes" && also.has("eyes")) {
     pm.push(
-      item(FACE.eyeSerum, "Eyes", "You also flagged the eye area — evening is enough to start")
+      item(FACE.eyeSerum, "Eyes", "You mentioned the eye area. Evening is enough to start.")
     );
   } else if (a.concern !== "eyes" && ex.includes("eyes") && full && a.concern !== "breakouts") {
     pm.push(item(FACE.eyeSerum, "Eyes", "Dedicated eye care for the thinnest skin on your face"));
@@ -420,6 +420,13 @@ export function buildBody(a) {
         ? "Dry, brittle hair needs nutrients sealed in — that's this product's job"
         : "Detangling, shine, and care that stays put"));
     }
+    // has() is true for every key on the auto path. Only add these when they were ticked.
+    if (raw.includes("oral")) {
+      out.push(item(BODY.toothOil, "Teeth & gums", "Oil pulling for teeth and gums. Swish it before you brush."));
+    }
+    if (raw.includes("wipes")) {
+      out.push(item(BODY.stayFresh, "Bum care", "Foam on toilet paper for the bum and intimate area, instead of a wet wipe."));
+    }
     return out;
   }
 
@@ -473,8 +480,8 @@ export function buildBody(a) {
     }
   }
 
-  if (has("oral")) out.push(item(BODY.toothOil, "Oral care", "Certified-organic oil pulling for teeth and gums"));
-  if (has("wipes")) out.push(item(BODY.stayFresh, "Fresh-up", "Plastic-free, and genuinely more effective than a dry-paper compromise"));
+  if (has("oral")) out.push(item(BODY.toothOil, "Teeth & gums", "Oil pulling for teeth and gums. Swish it before you brush."));
+  if (has("wipes")) out.push(item(BODY.stayFresh, "Bum care", "Foam on toilet paper for the bum and intimate area, instead of a wet wipe."));
 
   return out;
 }
@@ -853,7 +860,7 @@ export function buildHero(ans, path, face, body, supp) {
     }
 
     if (ans.concern === "breakouts" || ans.skinType === "oily") {
-      bump(byId.tonicPure || FACE.tonicPure, 68, "Clarifying tonic for oil and congestion");
+      bump(byId.tonicPure || FACE.tonicPure, 68, "Clarifying toner for oil and congestion");
     }
     if (byId.afterSun) {
       bump(byId.afterSun, 62, byId.afterSun.why || "After-sun soothe and soft glow");
