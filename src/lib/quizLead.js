@@ -1,11 +1,48 @@
 /** Send a finished match to the partner on this quiz link. Nowhere else. */
 
+import { partnerParam } from "./shopLinks";
+
 const SUPABASE_URL = "https://pqznpgqnfmnsvdgcwxiy.supabase.co";
 const SUPABASE_ANON =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxem5wZ3FuZm1uc3ZkZ2N3eGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2OTgyOTgsImV4cCI6MjEwMTI3NDI5OH0.prNKV7vbSNVNY0sqft4EjAdNeM10bg-seOUth3pIsQA";
 
+function instagramHandle(raw) {
+  let handle = String(raw || "").trim();
+  handle = handle.replace(/^(https?:\/\/)?(www\.)?instagram\.com\//i, "");
+  handle = handle.split(/[/?#]/)[0].replace(/^@+/, "").trim();
+  if (!/^[A-Za-z0-9._]{2,30}$/.test(handle)) return "";
+  return handle;
+}
+
+/** The Instagram handle saved on that partner's First Seeds page, if they set one. */
+export async function readPartnerInstagram(slug) {
+  const partner = String(slug || "").trim().toLowerCase();
+  if (!partner || partner === "join" || partner === "www") return "";
+  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_lead_page`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON,
+        Authorization: `Bearer ${SUPABASE_ANON}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ p_slug: partner }),
+      signal: controller ? controller.signal : undefined,
+    });
+    if (!res.ok) return "";
+    const data = await res.json();
+    return instagramHandle(data?.instagram);
+  } catch {
+    return "";
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 export function readQuizPartnerSlug(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const slug = String(new URLSearchParams(loc.search || "").get("with") || "")
+  const slug = String(partnerParam(loc, "with") || "")
     .trim()
     .toLowerCase();
   if (!slug || slug === "join" || slug === "www") return "";

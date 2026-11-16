@@ -1,5 +1,7 @@
 /** The landing page's saved look, when the quiz link carries it. */
 
+import { partnerParam } from "./shopLinks";
+
 const LOOKS = new Set(["grove", "brown", "white", "blue", "blush"]);
 const CORNERS = new Set(["sharp", "soft"]);
 
@@ -33,10 +35,9 @@ const TYPE = {
 };
 
 export function applyQuizLook(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const params = new URLSearchParams(loc.search || "");
-  const look = String(params.get("look") || "").trim().toLowerCase();
-  const fonts = String(params.get("fonts") || "").trim().toLowerCase();
-  const corners = String(params.get("corners") || "").trim().toLowerCase();
+  const look = String(partnerParam(loc, "look") || "").trim().toLowerCase();
+  const fonts = String(partnerParam(loc, "fonts") || "").trim().toLowerCase();
+  const corners = String(partnerParam(loc, "corners") || "").trim().toLowerCase();
   const root = document.documentElement;
   if (LOOKS.has(look)) root.setAttribute("data-look", look);
   if (CORNERS.has(corners)) root.setAttribute("data-corners", corners);

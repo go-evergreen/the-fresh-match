@@ -110,11 +110,33 @@ function usPath(slug) {
   return LINKED.has(mapped) ? mapped : "";
 }
 
+const PARTNER_KEYS = ["shop", "code", "ref", "with", "who", "look", "fonts", "corners"];
+
+/** Shop, code, and shelf slug from the query, or from the hash if a chat dropped the query. */
+export function partnerBackupQuery(loc = typeof window !== "undefined" ? window.location : { search: "", hash: "" }) {
+  const search = new URLSearchParams((loc && loc.search) || "");
+  const hash = new URLSearchParams(String((loc && loc.hash) || "").replace(/^#/, ""));
+  const parts = [];
+  PARTNER_KEYS.forEach((key) => {
+    const value = search.get(key) || hash.get(key) || "";
+    if (value) parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+  });
+  return parts.join("&");
+}
+
+export function partnerParam(loc, key) {
+  const search = new URLSearchParams((loc && loc.search) || "");
+  const fromSearch = search.get(key);
+  if (fromSearch) return fromSearch;
+  const hash = String((loc && loc.hash) || "").replace(/^#/, "");
+  if (!hash) return "";
+  return new URLSearchParams(hash).get(key) || "";
+}
+
 export function readPartnerShop(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const params = new URLSearchParams(loc.search || "");
-  let host = partnerHost(params.get("shop") || "");
-  const code = partnerCode(params.get("code") || "");
-  const weblink = affiliateCode(params.get("ref") || "");
+  let host = partnerHost(partnerParam(loc, "shop") || "");
+  const code = partnerCode(partnerParam(loc, "code") || "");
+  const weblink = affiliateCode(partnerParam(loc, "ref") || "");
   if (!host && /^[0-9]{4,12}$/.test(weblink)) host = weblink + ".ringana.us";
   return {
     origin: host ? "https://" + host : "",
@@ -170,10 +192,9 @@ function firstFromSlug(slug) {
 
 /** Only a real Fresh Shelf door. A bare with= slug is enough. */
 export function readShelfInvite(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const params = new URLSearchParams(loc.search || "");
-  const direct = shelfHrefFor(params.get("with") || "");
+  const direct = shelfHrefFor(partnerParam(loc, "with") || "");
   if (direct) return direct;
-  const raw = params.get("shelf") || "";
+  const raw = partnerParam(loc, "shelf") || "";
   if (!raw) return "";
   let url;
   try {
@@ -190,13 +211,12 @@ export function readShelfInvite(loc = typeof window !== "undefined" ? window.loc
 
 /** First name for the shelf prompt. who= wins, then the shelf slug. */
 export function readPartnerFirst(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const params = new URLSearchParams(loc.search || "");
-  const given = String(params.get("who") || "").trim().replace(/\s+/g, " ").split(" ")[0] || "";
+  const given = String(partnerParam(loc, "who") || "").trim().replace(/\s+/g, " ").split(" ")[0] || "";
   if (/^[A-Za-z][A-Za-z.'-]{0,30}$/.test(given)) return given;
-  const fromWith = firstFromSlug(params.get("with") || "");
+  const fromWith = firstFromSlug(partnerParam(loc, "with") || "");
   if (fromWith) return fromWith;
   try {
-    const shelf = new URL(params.get("shelf") || "");
+    const shelf = new URL(partnerParam(loc, "shelf") || "");
     return firstFromSlug(shelf.searchParams.get("with") || "");
   } catch {
     return "";
