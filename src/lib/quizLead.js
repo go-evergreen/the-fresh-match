@@ -45,7 +45,7 @@ export function readQuizPartnerSlug(loc = typeof window !== "undefined" ? window
   const slug = String(partnerParam(loc, "with") || readPathSlug(loc) || "")
     .trim()
     .toLowerCase();
-  if (!slug || slug === "join" || slug === "www") return "";
+  if (!slug || slug === "join" || slug === "www" || slug === "freshoffthepress") return "";
   if (slug === "tay" || slug === "taylor") return slug;
   if (!/^[a-z0-9][a-z0-9-]{1,39}$/.test(slug)) return "";
   return slug;

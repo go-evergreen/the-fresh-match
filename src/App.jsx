@@ -7,7 +7,9 @@ import { LeaveBehindCard } from "./components/LeaveBehindCard";
 import { LegitSection } from "./components/LegitSection";
 import { ShelfPrompt } from "./components/ShelfPrompt";
 import { buildRestoreUrl, encodeMatchState, readMatchFromLocation } from "./lib/share";
-import { partnerBackupQuery, readPartnerFirst, readPartnerShop, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
+import { partnerBackupQuery, readPartnerFirst, readPartnerShop, readPathSlug, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
+import { PARTY_SLUG } from "./data/partyPartners";
+import { PartyPick } from "./components/PartyPick";
 import { readPartnerInstagram, readQuizPartnerSlug, sendQuizLead } from "./lib/quizLead";
 import "./index.css";
 
@@ -314,6 +316,7 @@ export default function App() {
   const shelfInvite = useMemo(() => readShelfInvite(), []);
   const partnerFirst = useMemo(() => readPartnerFirst(), []);
   const partnerSlug = useMemo(() => readQuizPartnerSlug(), []);
+  const partyDoor = useMemo(() => readPathSlug() === PARTY_SLUG, []);
 
   useEffect(() => {
     let live = true;
@@ -370,7 +373,9 @@ export default function App() {
       </div>
 
       <div className="shell">
-        {screen === "intro" && (
+        {partyDoor ? <PartyPick /> : null}
+
+        {!partyDoor && screen === "intro" && (
           <div className="intro">
             <div className="intro-hero">
               <div className="intro-copy">
@@ -418,7 +423,7 @@ export default function App() {
           </div>
         )}
 
-        {screen === "quiz" && q && (
+        {!partyDoor && screen === "quiz" && q && (
           <div className="quiz">
             <div className="progress-wrap">
               <div className="progress-top">
@@ -498,7 +503,7 @@ export default function App() {
           </div>
         )}
 
-        {screen === "reach" && (
+        {!partyDoor && screen === "reach" && (
           <div className="quiz">
             <div className="progress-wrap">
               <div className="progress-top">
@@ -575,7 +580,7 @@ export default function App() {
           </div>
         )}
 
-        {screen === "results" && (
+        {!partyDoor && screen === "results" && (
           <div className="results">
             {restoredBanner && (
               <div className="restore-banner">
@@ -734,7 +739,7 @@ export default function App() {
         )}
       </div>
       <ShelfPrompt
-        active={screen === "results"}
+        active={!partyDoor && screen === "results"}
         href={shelfInvite}
         name={partnerFirst}
       />

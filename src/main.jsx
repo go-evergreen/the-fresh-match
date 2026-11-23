@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { applyQuizLook } from "./lib/look.js";
 import { partnerParam, readPathSlug } from "./lib/shopLinks.js";
+import { PARTY_SLUG } from "./data/partyPartners.js";
 import { loadPartnerDoor, rememberPartnerDoor } from "./lib/quizLead.js";
 import App from "./App.jsx";
 
@@ -13,7 +14,7 @@ async function boot() {
     const missingShop = !partnerParam(window.location, "shop") && !partnerParam(window.location, "code") && !partnerParam(window.location, "ref");
     const missingName = !partnerParam(window.location, "who");
     const missingLook = !partnerParam(window.location, "look");
-    if (slug && (missingShop || missingName || missingLook)) {
+    if (slug && slug !== PARTY_SLUG && (missingShop || missingName || missingLook)) {
       const door = await loadPartnerDoor(slug);
       if (door) {
         DOOR_KEYS.forEach((key) => {

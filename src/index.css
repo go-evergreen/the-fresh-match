@@ -374,6 +374,45 @@ button:focus-visible {
   transition: transform 0.2s, color 0.2s;
 }
 
+a.path-btn {
+  text-decoration: none;
+}
+
+.party-search {
+  display: block;
+  max-width: 22rem;
+  margin: 0 auto 1.15rem;
+}
+
+.party-search input {
+  width: 100%;
+  appearance: none;
+  background: var(--hero-chip);
+  border: 1px solid var(--hero-line);
+  color: var(--hero-ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.2;
+  border-radius: 999px;
+  padding: 0.9rem 1.15rem;
+  outline: none;
+}
+
+.party-search input::placeholder {
+  color: rgba(232, 223, 208, 0.55);
+}
+
+.party-search input:focus {
+  border-color: var(--brass-light);
+}
+
+.party-empty {
+  color: var(--hero-muted);
+  font-size: 0.95rem;
+  margin-top: 0.85rem;
+}
+
 .intro-foot {
   max-width: 34rem;
   margin: 1.5rem auto 0;
