@@ -112,6 +112,18 @@ button:focus-visible {
   z-index: 30;
 }
 
+.app:has(.party-overlay) .brand-top::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: var(--linen);
+}
+
 .brand-stamp {
   width: clamp(68px, 18vw, 84px);
   height: auto;
@@ -382,15 +394,12 @@ a.path-btn {
 
 .party-overlay {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 6.4rem;
+  inset: 0;
   z-index: 20;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 15.5rem 1.25rem 2rem;
+  padding: 21.9rem 1.25rem 2rem;
   background: rgba(20, 32, 25, 0.16);
 }
 
