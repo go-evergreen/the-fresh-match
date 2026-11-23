@@ -163,6 +163,14 @@ button:focus-visible {
   color: var(--brass);
 }
 
+.brand-top .brand-mark.party-title {
+  text-transform: none;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.7rem, 5.4vw, 2.35rem);
+  font-weight: 500;
+  color: var(--pine);
+}
+
 .shell {
   max-width: 680px;
   margin: 0 auto;
@@ -378,10 +386,20 @@ a.path-btn {
   text-decoration: none;
 }
 
+.intro.party-intro,
+.intro.party-intro .intro-hero {
+  overflow: visible;
+}
+
+.party-hero {
+  padding: 2.5rem 1.5rem 2.35rem;
+}
+
 .party-search {
   display: block;
+  position: relative;
   max-width: 22rem;
-  margin: 0 auto 1.15rem;
+  margin: 0 auto;
 }
 
 .party-search input {
@@ -407,10 +425,44 @@ a.path-btn {
   border-color: var(--brass-light);
 }
 
+.party-drop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  z-index: 4;
+  display: grid;
+  gap: 0.35rem;
+  max-height: 16.5rem;
+  overflow: auto;
+  padding: 0.4rem;
+  background: #173026;
+  border: 1px solid var(--hero-line);
+  border-radius: 18px;
+  text-align: left;
+}
+
+.party-drop a {
+  display: block;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  color: var(--hero-ink);
+  text-decoration: none;
+  font-family: var(--display);
+  font-size: 1.12rem;
+  font-weight: 500;
+}
+
+.party-drop a:hover,
+.party-drop a:focus-visible {
+  background: color-mix(in srgb, var(--brass) 16%, transparent);
+}
+
 .party-empty {
   color: var(--hero-muted);
   font-size: 0.95rem;
-  margin-top: 0.85rem;
+  line-height: 1.45;
+  margin: 0.45rem 0.7rem 0.55rem;
 }
 
 .intro-foot {

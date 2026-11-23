@@ -365,7 +365,9 @@ export default function App() {
     <div className="app">
       <div className="brand-top">
         <img className="brand-stamp" src="./grove-stamp.png" alt="The Fresh Grove" />
-        {partnerFirst ? (
+        {partyDoor ? (
+          <span className="brand-mark party-title">Fresh off the Press</span>
+        ) : partnerFirst ? (
           <span ref={brandRef} className="brand-mark">
             Ringana <span>with&nbsp;{partnerFirst}</span>
           </span>
