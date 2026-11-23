@@ -218,6 +218,7 @@ export default function App() {
   };
 
   const start = (p) => {
+    if (showPress) return;
     setPath(p);
     setScreen("quiz");
     setI(0);
@@ -365,7 +366,10 @@ export default function App() {
   const goalsNeedPick = q?.id === "goals" && ans.approach === "targeted";
   const multiBlocked = goalsNeedPick && draft.length === 0;
 
+  const choosing = useRef(false);
   const choosePartner = async (person) => {
+    if (choosing.current) return;
+    choosing.current = true;
     const door = (await loadPartnerDoor(person.slug)) || {
       with: person.slug,
       who: String(person.name || "").trim().split(/\s+/)[0] || "",
@@ -394,7 +398,7 @@ export default function App() {
         ) : null}
       </div>
 
-      <div className="shell">
+      <div className="shell" inert={showPress ? true : undefined}>
         {screen === "intro" && (
           <div className="intro">
             <div className="intro-hero">
