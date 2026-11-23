@@ -10,7 +10,8 @@ import { buildRestoreUrl, encodeMatchState, readMatchFromLocation } from "./lib/
 import { partnerBackupQuery, readPartnerFirst, readPartnerShop, readPathSlug, readShelfInvite, withPartnerLinks } from "./lib/shopLinks";
 import { PARTY_SLUG } from "./data/partyPartners";
 import { PartyPick } from "./components/PartyPick";
-import { readPartnerInstagram, readQuizPartnerSlug, sendQuizLead } from "./lib/quizLead";
+import { loadPartnerDoor, readPartnerInstagram, readQuizPartnerSlug, rememberPartnerDoor, sendQuizLead } from "./lib/quizLead";
+import { applyQuizLook } from "./lib/look";
 import "./index.css";
 
 const QUIZ_URL =
@@ -312,11 +313,14 @@ export default function App() {
   });
   const summary = summarizeAnswers(ans, path);
 
-  const partnerShop = useMemo(() => readPartnerShop(), []);
-  const shelfInvite = useMemo(() => readShelfInvite(), []);
-  const partnerFirst = useMemo(() => readPartnerFirst(), []);
-  const partnerSlug = useMemo(() => readQuizPartnerSlug(), []);
+  const [doorRev, setDoorRev] = useState(0);
+  const [partyChosen, setPartyChosen] = useState(false);
+  const partnerShop = useMemo(() => readPartnerShop(), [doorRev]);
+  const shelfInvite = useMemo(() => readShelfInvite(), [doorRev]);
+  const partnerFirst = useMemo(() => readPartnerFirst(), [doorRev]);
+  const partnerSlug = useMemo(() => readQuizPartnerSlug(), [doorRev]);
   const partyDoor = useMemo(() => readPathSlug() === PARTY_SLUG, []);
+  const showPress = partyDoor && !partyChosen;
 
   useEffect(() => {
     let live = true;
@@ -339,7 +343,7 @@ export default function App() {
     const observer = new ResizeObserver(fit);
     if (el.parentElement) observer.observe(el.parentElement);
     return () => observer.disconnect();
-  }, [partnerFirst]);
+  }, [partnerFirst, showPress]);
   const lanes = useMemo(() => {
     if (screen !== "results") return { skincare: [], body: [], bodyMore: [], supplements: [] };
     const built = buildLanes(face, body, supp);
@@ -361,12 +365,28 @@ export default function App() {
   const goalsNeedPick = q?.id === "goals" && ans.approach === "targeted";
   const multiBlocked = goalsNeedPick && draft.length === 0;
 
+  const choosePartner = async (person) => {
+    const door = (await loadPartnerDoor(person.slug)) || {
+      with: person.slug,
+      who: String(person.name || "").trim().split(/\s+/)[0] || "",
+    };
+    if (!door.who) door.who = String(person.name || "").trim().split(/\s+/)[0] || "";
+    rememberPartnerDoor(door);
+    applyQuizLook();
+    const next = `/${person.slug}${window.location.search}${window.location.hash}`;
+    window.history.replaceState(null, "", next);
+    setPartyChosen(true);
+    setDoorRev((n) => n + 1);
+  };
+
   return (
     <div className="app">
       <div className="brand-top">
         <img className="brand-stamp" src="./grove-stamp.png" alt="The Fresh Grove" />
-        {partyDoor ? (
-          <span className="brand-mark party-title">Fresh off the Press</span>
+        {showPress ? (
+          <span ref={brandRef} className="brand-mark">
+            Fresh off the <span>Press</span>
+          </span>
         ) : partnerFirst ? (
           <span ref={brandRef} className="brand-mark">
             Ringana <span>with&nbsp;{partnerFirst}</span>
@@ -375,9 +395,7 @@ export default function App() {
       </div>
 
       <div className="shell">
-        {partyDoor ? <PartyPick /> : null}
-
-        {!partyDoor && screen === "intro" && (
+        {screen === "intro" && (
           <div className="intro">
             <div className="intro-hero">
               <div className="intro-copy">
@@ -425,7 +443,7 @@ export default function App() {
           </div>
         )}
 
-        {!partyDoor && screen === "quiz" && q && (
+        {screen === "quiz" && q && (
           <div className="quiz">
             <div className="progress-wrap">
               <div className="progress-top">
@@ -505,7 +523,7 @@ export default function App() {
           </div>
         )}
 
-        {!partyDoor && screen === "reach" && (
+        {screen === "reach" && (
           <div className="quiz">
             <div className="progress-wrap">
               <div className="progress-top">
@@ -582,7 +600,7 @@ export default function App() {
           </div>
         )}
 
-        {!partyDoor && screen === "results" && (
+        {screen === "results" && (
           <div className="results">
             {restoredBanner && (
               <div className="restore-banner">
@@ -741,10 +759,11 @@ export default function App() {
         )}
       </div>
       <ShelfPrompt
-        active={!partyDoor && screen === "results"}
+        active={screen === "results"}
         href={shelfInvite}
         name={partnerFirst}
       />
+      {showPress ? <PartyPick onChoose={choosePartner} /> : null}
     </div>
   );
 }

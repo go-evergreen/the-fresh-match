@@ -108,6 +108,8 @@ button:focus-visible {
   box-sizing: border-box;
   text-align: left;
   padding: 1.05rem 1.25rem 0.35rem;
+  position: relative;
+  z-index: 30;
 }
 
 .brand-stamp {
@@ -161,14 +163,6 @@ button:focus-visible {
   display: inline;
   white-space: nowrap;
   color: var(--brass);
-}
-
-.brand-top .brand-mark.party-title {
-  text-transform: none;
-  letter-spacing: -0.03em;
-  font-size: clamp(1.7rem, 5.4vw, 2.35rem);
-  font-weight: 500;
-  color: var(--pine);
 }
 
 .shell {
@@ -386,13 +380,76 @@ a.path-btn {
   text-decoration: none;
 }
 
-.intro.party-intro,
-.intro.party-intro .intro-hero {
-  overflow: visible;
+.party-overlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 6.4rem;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 15.5rem 1.25rem 2rem;
+  background: rgba(20, 32, 25, 0.16);
 }
 
-.party-hero {
-  padding: 2.5rem 1.5rem 2.35rem;
+.brand-top .brand-mark {
+  animation: brand-in 0.45s ease;
+}
+
+@keyframes brand-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.party-card {
+  width: min(24rem, 100%);
+  padding: 1.45rem 1.2rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--linen);
+  color: var(--ink);
+  text-align: center;
+  box-shadow: 0 18px 50px rgba(20, 32, 25, 0.28);
+}
+
+.party-card h2 {
+  margin: 0 0 1rem;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2rem, 7vw, 2.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--pine);
+}
+
+.party-card .party-search input {
+  background: var(--white);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.party-card .party-search input::placeholder {
+  color: rgba(61, 85, 74, 0.62);
+}
+
+.party-card .party-drop {
+  background: var(--white);
+  border-color: var(--line);
+}
+
+.party-card .party-drop button {
+  color: var(--pine);
+}
+
+.party-card .party-empty {
+  color: var(--ink-soft);
 }
 
 .party-search {
@@ -442,19 +499,24 @@ a.path-btn {
   text-align: left;
 }
 
-.party-drop a {
+.party-drop button {
+  appearance: none;
+  width: 100%;
   display: block;
   padding: 0.85rem 1rem;
+  border: 0;
   border-radius: 12px;
+  background: transparent;
   color: var(--hero-ink);
-  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
   font-family: var(--display);
   font-size: 1.12rem;
   font-weight: 500;
 }
 
-.party-drop a:hover,
-.party-drop a:focus-visible {
+.party-drop button:hover,
+.party-drop button:focus-visible {
   background: color-mix(in srgb, var(--brass) 16%, transparent);
 }
 
