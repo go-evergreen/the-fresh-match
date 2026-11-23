@@ -2665,6 +2665,10 @@ html[data-look="blush"] {
   padding: 0.7rem 0.75rem 0.75rem;
 }
 
+.lane-actions-one {
+  grid-template-columns: 1fr;
+}
+
 .lane-learn,
 .lane-shop,
 .lane-soon {

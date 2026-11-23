@@ -183,7 +183,7 @@ export function decorateProduct(product, shop) {
   const us = usPath(product.slug);
   if (!us) return { ...product, url: "", comingSoon: true };
   const comingSoon = NOT_YET.has(us);
-  const href = productHref(shop, product.slug) || `https://www.ringana.us/produkt/${us}/?lang=en`;
+  const href = productHref(shop, product.slug);
   return { ...product, url: href, comingSoon };
 }
 

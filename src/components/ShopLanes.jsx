@@ -66,9 +66,9 @@ function ProductSheet({ product, onClose }) {
           <a className="btn-brass sheet-shop" href={product.url} target="_blank" rel="noreferrer">
             Shop this
           </a>
-        ) : (
+        ) : product.comingSoon ? (
           <p className="sheet-soon">Coming soon — not on the shop yet.</p>
-        )}
+        ) : null}
       </div>
     </div>,
     document.body
@@ -91,7 +91,7 @@ function LaneCard({ product, onOpen }) {
         <div className="lane-name">{product.name}</div>
         {product.kind && <div className="lane-kind">{product.kind}</div>}
       </button>
-      <div className="lane-actions">
+      <div className={`lane-actions${shop || product.comingSoon ? "" : " lane-actions-one"}`}>
         <button type="button" className="lane-learn" onClick={() => onOpen(product)}>
           Learn
         </button>
@@ -99,9 +99,9 @@ function LaneCard({ product, onOpen }) {
           <a className="lane-shop" href={product.url} target="_blank" rel="noreferrer">
             Shop
           </a>
-        ) : (
+        ) : product.comingSoon ? (
           <span className="lane-soon">Soon</span>
-        )}
+        ) : null}
       </div>
     </article>
   );
