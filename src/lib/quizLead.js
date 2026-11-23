@@ -42,7 +42,11 @@ export async function readPartnerInstagram(slug) {
 }
 
 export function readQuizPartnerSlug(loc = typeof window !== "undefined" ? window.location : { search: "" }) {
-  const slug = String(partnerParam(loc, "with") || readPathSlug(loc) || "")
+  const pathSlug = readPathSlug(loc);
+  const marked = String(partnerParam(loc, "with") || "").trim().toLowerCase();
+  // The address they landed on is the partner. A leftover ?with= must not
+  // hand the lead, or the First Seeds note, to someone else.
+  const slug = (pathSlug && pathSlug !== "freshoffthepress" ? pathSlug : marked)
     .trim()
     .toLowerCase();
   if (!slug || slug === "join" || slug === "www" || slug === "freshoffthepress") return "";

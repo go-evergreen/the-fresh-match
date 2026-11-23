@@ -377,8 +377,7 @@ export default function App() {
     if (!door.who) door.who = String(person.name || "").trim().split(/\s+/)[0] || "";
     rememberPartnerDoor(door);
     applyQuizLook();
-    const next = `/${person.slug}${window.location.search}${window.location.hash}`;
-    window.history.replaceState(null, "", next);
+    window.history.replaceState(null, "", `/${person.slug}`);
     setPartyChosen(true);
     setDoorRev((n) => n + 1);
   };
