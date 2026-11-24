@@ -6,7 +6,9 @@ export function PartyPick({ onChoose }) {
   const needle = query.trim().toLowerCase();
   const people = useMemo(() => {
     if (!needle) return [];
-    return PARTY_PARTNERS.filter((person) => person.name.toLowerCase().includes(needle));
+    return PARTY_PARTNERS.filter((person) =>
+      `${person.name} ${person.also || ""}`.toLowerCase().includes(needle)
+    );
   }, [needle]);
 
   return (

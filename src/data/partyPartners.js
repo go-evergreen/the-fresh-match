@@ -37,6 +37,7 @@ export const PARTY_PARTNERS = [
   { name: 'Faith-Mary Barber', slug: 'faith' },
   { name: 'Felicia Hart', slug: 'felicia' },
   { name: 'Heather DiFranco', slug: 'heather' },
+  { name: 'Iulia Tuchendria', slug: 'iulia', also: 'Yulikka Yu' },
   { name: 'Jeanine Varnold', slug: 'jeanine' },
   { name: 'Jen McCann', slug: 'jen-mccann' },
   { name: 'Jess Jensen', slug: 'jessica-jensen' },
