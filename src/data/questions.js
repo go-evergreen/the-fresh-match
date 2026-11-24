@@ -280,7 +280,7 @@ export const SUPP_Q = [
   },
 ];
 
-/** Appended to every path — changes hero size + framing */
+/** No longer asked. Older saved matches may still carry this answer. */
 export const INTENT_Q = {
   id: "intent",
   single: true,

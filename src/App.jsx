@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { faceQuestions, BODY_Q, SUPP_Q, INTENT_Q } from "./data/questions";
+import { faceQuestions, BODY_Q, SUPP_Q } from "./data/questions";
 import { buildFace, buildBody, buildSupp, summarizeAnswers } from "./engine/match";
-import { ShopLane, RoutineFold } from "./components/ShopLanes";
+import { ShopLane } from "./components/ShopLanes";
 import { buildLanes, bodyLaneLabel } from "./engine/lanes";
 import { LeaveBehindCard } from "./components/LeaveBehindCard";
 import { LegitSection } from "./components/LegitSection";
@@ -47,9 +47,9 @@ function wantsHairQuestion(answers) {
 function buildQs(path, answers = {}) {
   if (!path) return [];
   const bodyQs = BODY_Q.filter((q) => q.id !== "hairType" || wantsHairQuestion(answers));
-  if (path === "skin") return [...faceQuestions(answers), ...bodyQs, INTENT_Q];
-  if (path === "supp") return [...SUPP_Q, INTENT_Q];
-  if (path === "both") return [...faceQuestions(answers), ...bodyQs, ...SUPP_Q, INTENT_Q];
+  if (path === "skin") return [...faceQuestions(answers), ...bodyQs];
+  if (path === "supp") return [...SUPP_Q];
+  if (path === "both") return [...faceQuestions(answers), ...bodyQs, ...SUPP_Q];
   return [];
 }
 
@@ -645,8 +645,6 @@ export default function App() {
             <ShopLane label={bodyLaneLabel(lanes.body)} items={lanes.body} more={lanes.bodyMore} />
             <ShopLane label="Supplements" items={lanes.supplements} />
 
-            <RoutineFold face={face} />
-
             <div className="edu-block">
               <div className="k">Remember why this line hits different</div>
               {[
@@ -657,12 +655,6 @@ export default function App() {
                 [
                   "Airless glass, campus-made",
                   "Their formulas, their campus, airless packaging — so you get potency without the preservative load.",
-                ],
-                [
-                  "Your match is already with them",
-                  partnerFirst
-                    ? `${partnerFirst} can see this match and help you decide what to begin with.`
-                    : "The person who sent you this quiz can see this match and help you decide what to begin with.",
                 ],
               ].map(([t, d]) => (
                 <div className="edu-item" key={t}>
