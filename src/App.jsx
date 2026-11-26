@@ -14,10 +14,10 @@ import { loadPartnerDoor, readPartnerInstagram, readQuizPartnerSlug, rememberPar
 import { applyQuizLook } from "./lib/look";
 import "./index.css";
 
-const QUIZ_URL =
-  typeof window !== "undefined"
-    ? `${window.location.origin}${window.location.pathname}`
-    : "https://go-evergreen.github.io/the-fresh-match/";
+function currentQuizUrl() {
+  if (typeof window === "undefined") return "https://quiz.thefreshgrove.team/";
+  return `${window.location.origin}${window.location.pathname}`;
+}
 
 const PATHS = [
   {
@@ -112,7 +112,7 @@ export default function App() {
   // Keep the URL hash in sync so "copy link" / refresh works
   useEffect(() => {
     if (screen !== "results" || !path) return;
-    const url = buildRestoreUrl(QUIZ_URL, {
+    const url = buildRestoreUrl(currentQuizUrl(), {
       path,
       ans,
       name: guestName,
@@ -175,7 +175,7 @@ export default function App() {
       );
       return;
     }
-    const matchUrl = buildRestoreUrl(QUIZ_URL, {
+    const matchUrl = buildRestoreUrl(currentQuizUrl(), {
       path,
       ans,
       name,
@@ -321,7 +321,11 @@ export default function App() {
   const partnerFirst = useMemo(() => readPartnerFirst(), [doorRev]);
   const partnerSlug = useMemo(() => readQuizPartnerSlug(), [doorRev]);
   const partyDoor = useMemo(() => readPathSlug() === PARTY_SLUG, []);
-  const showPress = partyDoor && !partyChosen;
+  const viewingMatch = useMemo(() => {
+    const hash = typeof window !== "undefined" ? window.location.hash || "" : "";
+    return /[#&]m=/.test(hash);
+  }, []);
+  const showPress = partyDoor && !partyChosen && !viewingMatch;
 
   useEffect(() => {
     let live = true;

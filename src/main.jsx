@@ -8,8 +8,21 @@ import App from "./App.jsx";
 
 const DOOR_KEYS = ["shop", "code", "ref", "with", "who", "look", "fonts", "corners"];
 
+/** A saved match opened from the party link belongs on that partner's quiz, not the picker. */
+function settlePartyResult() {
+  if (readPathSlug() !== PARTY_SLUG) return;
+  const hash = window.location.hash || "";
+  if (!/[#&]m=/.test(hash)) return;
+  const owner = String(partnerParam(window.location, "with") || "").trim().toLowerCase();
+  if (!owner || owner === PARTY_SLUG || owner === "join" || owner === "www") return;
+  if (!/^[a-z0-9][a-z0-9-]{1,39}$/.test(owner)) return;
+  const path = owner === "tay" ? "/taylor" : `/${owner}`;
+  window.history.replaceState(null, "", path + window.location.search + hash);
+}
+
 async function boot() {
   try {
+    settlePartyResult();
     const slug = readPathSlug();
     const missingShop = !partnerParam(window.location, "shop") && !partnerParam(window.location, "code") && !partnerParam(window.location, "ref");
     const missingName = !partnerParam(window.location, "who");
